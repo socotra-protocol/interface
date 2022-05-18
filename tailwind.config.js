@@ -4,15 +4,20 @@ module.exports = withMT({
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     colors: {
-      blue: {
-        light: "#85d7ff",
-        DEFAULT: "#1fb6ff",
-        dark: "#009eeb",
+      primary: {
+        light: "#B3E0CB",
+        DEFAULT: "#299D66",
+        dark: "#006837",
       },
-      pink: {
-        light: "#ff7ce5",
-        DEFAULT: "#ff49db",
-        dark: "#ff16d1",
+      secondary: {
+        light: "#C9C5BB",
+        DEFAULT: "#8B877E",
+        dark: "#635947",
+      },
+      white: {
+        light: "#FFFFFF",
+        DEFAULT: "#FCFBF9",
+        dark: "#EDE7DA",
       },
       gray: {
         darkest: "#1f2d3d",
@@ -21,6 +26,12 @@ module.exports = withMT({
         light: "#e0e6ed",
         lightest: "#f9fafc",
       },
+    },
+    fontFamily: {
+      body: ['"Sora"'],
+    },
+    fontSize: {
+      md: "16px",
     },
     extend: {},
   },
