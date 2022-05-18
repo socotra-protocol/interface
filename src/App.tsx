@@ -9,6 +9,7 @@ function App() {
       </h1>
       <PrimaryButton color="pink">Hi</PrimaryButton>
     </>
+    
   )
 }
 
