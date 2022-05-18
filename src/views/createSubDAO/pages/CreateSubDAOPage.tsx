@@ -1,11 +1,33 @@
-import { useState } from "react"
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useMemo, useState } from "react"
+import { PrimaryButton, SecondaryButton } from "../../../components/Button"
 import { Tabs, Tab } from "../../../components/Tabs"
 import { CREATE_SUB_DAO_STEP } from "../../../constants/createSubDAO"
+import { useCreateSubDAOStep } from "../../../hooks/useCreateSubDAOStep"
+import { Complete } from "../Complete"
+import { Information } from "../Information"
+import { Member } from "../Member"
+import { ProposalSetting } from "../ProposalSetting"
+import { SelectERC20 } from "../SelectERC20"
 
 export const CreateSubDAOPage = () => {
-  const [tabValue, setTabValue] = useState<CREATE_SUB_DAO_STEP>(
-    CREATE_SUB_DAO_STEP.SELECT_ERC20
-  )
+  const { onNext, onPrev, value } = useCreateSubDAOStep()
+
+  const content = useMemo(() => {
+    switch (value) {
+      case CREATE_SUB_DAO_STEP.SELECT_ERC20:
+        return <SelectERC20 />
+      case CREATE_SUB_DAO_STEP.INFORMATION:
+        return <Information />
+      case CREATE_SUB_DAO_STEP.MEMBER:
+        return <Member />
+      case CREATE_SUB_DAO_STEP.PROPOSAL_SETTING:
+        return <ProposalSetting />
+      case CREATE_SUB_DAO_STEP.COMPLETE:
+        return <Complete />
+    }
+  }, [value])
   return (
     <div>
       <div className="pt-[48px] flex items-center flex-col">
@@ -17,25 +39,33 @@ export const CreateSubDAOPage = () => {
         <Tabs>
           <Tab
             label="ERC-20"
-            selected={tabValue === CREATE_SUB_DAO_STEP.SELECT_ERC20}
+            selected={value === CREATE_SUB_DAO_STEP.SELECT_ERC20}
           />
           <Tab
             label="Information"
-            selected={tabValue === CREATE_SUB_DAO_STEP.INFORMATION}
+            selected={value === CREATE_SUB_DAO_STEP.INFORMATION}
           />
-          <Tab
-            label="Member"
-            selected={tabValue === CREATE_SUB_DAO_STEP.MEMBER}
-          />
+          <Tab label="Member" selected={value === CREATE_SUB_DAO_STEP.MEMBER} />
           <Tab
             label="Proposal setting"
-            selected={tabValue === CREATE_SUB_DAO_STEP.PROPOSAL_SETTING}
+            selected={value === CREATE_SUB_DAO_STEP.PROPOSAL_SETTING}
           />
           <Tab
             label="Complete"
-            selected={tabValue === CREATE_SUB_DAO_STEP.COMPLETE}
+            selected={value === CREATE_SUB_DAO_STEP.COMPLETE}
           />
         </Tabs>
+      </div>
+      {content}
+      <div className="flex justify-center py-[48px]">
+        <div className="grid grid-cols-2 w-[210px] gap-[8px]">
+          <SecondaryButton outlined dark onClick={onPrev}>
+            Back
+          </SecondaryButton>
+          <PrimaryButton dark onClick={onNext}>
+            Next <FontAwesomeIcon icon={faArrowRight} />
+          </PrimaryButton>
+        </div>
       </div>
     </div>
   )
