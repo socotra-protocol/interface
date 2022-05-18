@@ -19,7 +19,7 @@ export const Tab = (props: TabProps) => {
   const { label, selected } = props
   return (
     <div
-      className={`border-b-[3px] text-[12px] font-semibold  w-[150px] flex justify-center cursor-pointer  ${
+      className={`border-b-[3px] text-[12px] font-medium  w-[150px] flex justify-center cursor-pointer  ${
         selected ? "border-primary-dark  text-primary-dark" : "text-secondary"
       }`}
     >

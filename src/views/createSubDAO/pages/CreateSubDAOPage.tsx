@@ -45,7 +45,7 @@ export const CreateSubDAOPage = () => {
         </Tabs>
       </div>
       <div className="py-[48px]">
-        {content}
+        <div className="h-[500px]">{content}</div>
         <div className="flex justify-center pt-[53px] ">
           <div className="grid grid-cols-2 w-[210px] gap-[8px]">
             <SecondaryButton outlined dark onClick={onPrev}>
