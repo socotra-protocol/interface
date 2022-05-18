@@ -31,6 +31,9 @@ module.exports = {
       fontSize: {
         md: "16px",
       },
+      gridTemplateColumns: {
+        navbar: "220px 1fr 290px",
+      },
     },
   },
   plugins: [
