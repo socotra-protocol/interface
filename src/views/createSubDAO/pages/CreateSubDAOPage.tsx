@@ -37,23 +37,11 @@ export const CreateSubDAOPage = () => {
       </div>
       <div className="mt-[48px]">
         <Tabs>
-          <Tab
-            label="ERC-20"
-            selected={value === CREATE_SUB_DAO_STEP.SELECT_ERC20}
-          />
-          <Tab
-            label="Information"
-            selected={value === CREATE_SUB_DAO_STEP.INFORMATION}
-          />
-          <Tab label="Member" selected={value === CREATE_SUB_DAO_STEP.MEMBER} />
-          <Tab
-            label="Proposal setting"
-            selected={value === CREATE_SUB_DAO_STEP.PROPOSAL_SETTING}
-          />
-          <Tab
-            label="Complete"
-            selected={value === CREATE_SUB_DAO_STEP.COMPLETE}
-          />
+          <Tab label="ERC-20" selected={value >= 1} />
+          <Tab label="Information" selected={value >= 2} />
+          <Tab label="Member" selected={value >= 3} />
+          <Tab label="Proposal setting" selected={value >= 4} />
+          <Tab label="Complete" selected={value >= 5} />
         </Tabs>
       </div>
       <div className="py-[48px]">
