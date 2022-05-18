@@ -1,44 +1,46 @@
-import { Button, ButtonProps } from "@material-tailwind/react"
-import { useRef } from "react"
-
-type TPrimaryButtonProps = {
+export type ButtonProps = {
   dark?: boolean
   light?: boolean
-} & ButtonProps
+  outlined?: boolean
+} & React.DetailedHTMLProps<
+  React.ButtonHTMLAttributes<HTMLButtonElement>,
+  HTMLButtonElement
+>
 
 export const PrimaryButton = ({
   children,
   dark,
   light,
   ...props
-}: TPrimaryButtonProps) => {
-  const ref = useRef(null)
-
+}: ButtonProps) => {
   const colorClassName = dark
-    ? "bg-primary-dark"
+    ? "bg-primary-dark text-white"
     : light
-    ? "bg-primary-light text-primary"
-    : "bg-primary"
+    ? "bg-primary-light text-primary-dark"
+    : "bg-primary text-white"
 
   return (
-    <Button
+    <button
       {...props}
-      className={`${colorClassName} normal-case text-md ${
-        props.className || ""
-      }`}
+      className={`
+        ${colorClassName} 
+        normal-case 
+        text-md 
+        font-medium 
+        py-[8px] 
+        px-[16px] 
+        rounded-[8px] 
+        hover:opacity-[0.85] 
+        hover:shadow-none 
+        active:opacity-[0.90] 
+        active:shadow-none 
+        ${props.className || ""}`}
       color="grey"
-      ref={ref}
     >
       {children}
-    </Button>
+    </button>
   )
 }
-
-type TSecondaryButtonProps = {
-  outlined?: boolean
-  light?: boolean
-  dark?: boolean
-} & ButtonProps
 
 export const SecondaryButton = ({
   children,
@@ -46,30 +48,35 @@ export const SecondaryButton = ({
   dark,
   light,
   ...props
-}: TSecondaryButtonProps) => {
-  const ref = useRef(null)
-
+}: ButtonProps) => {
   const colorClassName =
     outlined && dark
-      ? "border-white-dark text-secondary-dark"
+      ? "border-white-dark text-secondary-dark border"
       : outlined && light
-      ? "border-secondary-light text-secondary-light"
+      ? "border-secondary-light text-secondary-light border"
       : dark
       ? "bg-white-dark text-secondary-dark"
       : "bg-secondary-light text-secondary-light"
 
-  const variant = outlined ? "outlined" : undefined
   return (
-    <Button
+    <button
       {...props}
-      className={`${colorClassName} normal-case text-md ${
-        props.className || ""
-      }`}
+      className={`
+        ${colorClassName}  
+        normal-case 
+        text-md 
+        font-medium 
+        py-[8px] 
+        px-[16px] 
+        rounded-[8px] 
+        hover:opacity-[0.85] 
+        hover:shadow-none 
+        active:opacity-[0.70] 
+        active:shadow-none 
+        ${props.className || ""}`}
       color="grey"
-      variant={variant}
-      ref={ref}
     >
       {children}
-    </Button>
+    </button>
   )
 }
