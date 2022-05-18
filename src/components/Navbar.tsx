@@ -2,13 +2,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { navbars, NavbarType } from "../constants/navbar"
 import { PrimaryButton, SecondaryButton } from "./Button"
-import { Link } from "react-router-dom"
+import { Link, matchRoutes, useLocation } from "react-router-dom"
 import { useConnectWallet } from "../hooks/useConnectWallet"
 import { useWeb3React } from "@web3-react/core"
 import { truncateAddress } from "../utils/wallet"
-
 export const Navbar = () => {
   const { metamask } = useConnectWallet()
+  const { pathname } = useLocation()
   const { account, activate, deactivate, active } = useWeb3React()
 
   return (
@@ -22,9 +22,15 @@ export const Navbar = () => {
       </Link>
       <div className="flex items-center gap-[32px]">
         {navbars.map((nav: NavbarType, idx: number) => (
-          <div className="hover:text-primary text-secondary cursor-pointer">
-            {nav.label}
-          </div>
+          <Link to={nav.link} key={`link-${idx}`}>
+            <div
+              className={`hover:text-primary  cursor-pointer ${
+                pathname === nav.link ? "text-primary" : "text-secondary"
+              }`}
+            >
+              {nav.label}
+            </div>
+          </Link>
         ))}
       </div>
       <div className="flex items-center gap-[16px]">
