@@ -1,6 +1,6 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { PrimaryButton, SecondaryButton } from "../../../components/Button"
 import { Tabs, Tab } from "../../../components/Tabs"
 import { CREATE_SUB_DAO_STEP } from "../../../constants/createSubDAO"

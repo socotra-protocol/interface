@@ -3,7 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { navbars, NavbarType } from "../constants/navbar"
 import { PrimaryButton, SecondaryButton } from "./Button"
 import { Link } from "react-router-dom"
+import { useConnectWallet } from "../hooks/useConnectWallet"
+import { useWeb3React } from "@web3-react/core"
+import { truncateAddress } from "../utils/wallet"
+
 export const Navbar = () => {
+  const { metamask } = useConnectWallet()
+  const { account, activate, deactivate, active } = useWeb3React()
+
   return (
     <div className="p-[32px] grid grid-cols-navbar gap-[40px] border-b border-white-dark">
       <Link to="/">
@@ -27,8 +34,8 @@ export const Navbar = () => {
             Create
           </PrimaryButton>
         </Link>
-        <SecondaryButton outlined dark>
-          Connect Wallet
+        <SecondaryButton outlined dark onClick={active ? deactivate : metamask}>
+          {active ? truncateAddress(account!) : "Connect Wallet"}
         </SecondaryButton>
       </div>
     </div>
