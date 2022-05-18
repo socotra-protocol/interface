@@ -7,16 +7,6 @@ export const ComponentsPage = () => {
     <>
       <div className="max-w-7xl mx-auto py-10">
         <div>
-          UI Framework :{" "}
-          <a
-            href="https://www.material-tailwind.com/docs/react/accordion"
-            target="_blank"
-            rel="noreferrer"
-          >
-            https://www.material-tailwind.com
-          </a>
-        </div>
-        <div>
           Css :{" "}
           <a
             href="https://tailwindcss.com/docs/aspect-ratio"

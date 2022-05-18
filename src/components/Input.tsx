@@ -14,14 +14,18 @@ export const Input = (props: InputProps) => {
     <div className="border border-white-dark bg-white-light p-[8px] rounded-[8px]  focus-within:border-primary">
       <input
         {...props}
-        className="peer   focus:outline-none bg-white-light w-full relative text-secondary-dark"
+        className="peer  focus:outline-none bg-white-light w-full relative text-secondary-dark"
       />
     </div>
   )
 }
 export const LabelInput = ({ label, icon, ...props }: LabelInputProps) => {
   return (
-    <div className="relative border border-white-dark bg-white-light px-[16px] py-[20px] rounded-[8px]  focus-within:border-primary">
+    <div
+      className={`relative border border-white-dark bg-white-light px-[16px] py-[20px] rounded-[8px]  focus-within:border-primary ${
+        props.className || ""
+      }`}
+    >
       <input
         type="text"
         placeholder="name"

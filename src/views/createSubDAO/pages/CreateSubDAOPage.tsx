@@ -17,7 +17,7 @@ export const CreateSubDAOPage = () => {
   const content = useMemo(() => {
     switch (value) {
       case CREATE_SUB_DAO_STEP.SELECT_ERC20:
-        return <SelectERC20 />
+        return <SelectERC20 onChange={() => {}} />
       case CREATE_SUB_DAO_STEP.INFORMATION:
         return <Information />
       case CREATE_SUB_DAO_STEP.MEMBER:
@@ -29,7 +29,7 @@ export const CreateSubDAOPage = () => {
     }
   }, [value])
   return (
-    <div>
+    <div className=" min-h-screen">
       <div className="pt-[48px] flex items-center flex-col">
         <h1 className="text-secondary-dark text-[36px] font-bold">
           Create new Sub DAO
@@ -56,15 +56,17 @@ export const CreateSubDAOPage = () => {
           />
         </Tabs>
       </div>
-      {content}
-      <div className="flex justify-center py-[48px]">
-        <div className="grid grid-cols-2 w-[210px] gap-[8px]">
-          <SecondaryButton outlined dark onClick={onPrev}>
-            Back
-          </SecondaryButton>
-          <PrimaryButton dark onClick={onNext}>
-            Next <FontAwesomeIcon icon={faArrowRight} />
-          </PrimaryButton>
+      <div className="py-[48px]">
+        {content}
+        <div className="flex justify-center pt-[53px] ">
+          <div className="grid grid-cols-2 w-[210px] gap-[8px]">
+            <SecondaryButton outlined dark onClick={onPrev}>
+              Back
+            </SecondaryButton>
+            <PrimaryButton dark onClick={onNext}>
+              Next <FontAwesomeIcon icon={faArrowRight} />
+            </PrimaryButton>
+          </div>
         </div>
       </div>
     </div>
