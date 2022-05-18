@@ -1,3 +1,3 @@
 export const Member = () => {
-  return <></>
+  return <>Member</>
 }

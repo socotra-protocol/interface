@@ -1,3 +1,3 @@
 export const SelectERC20 = () => {
-  return <></>
+  return <>SelectERC20</>
 }
