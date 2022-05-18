@@ -6,6 +6,8 @@ export const ComponentsPage = () => {
       <div>
         <div className="text-2xl">Components</div>
         <div className="text-lg">Font : Sora</div>
+        <hr />
+        <div className="text-2xl">Button</div>
         <div className="grid grid-cols-3 gap-3">
           <PrimaryButton>Primary</PrimaryButton>
           <PrimaryButton dark>Primary Dark</PrimaryButton>
