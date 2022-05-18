@@ -21,7 +21,7 @@ export const Navbar = () => {
         ))}
       </div>
       <div className="flex items-center gap-[16px]">
-        <Link to="create-subdao">
+        <Link to="/create-subdao">
           <PrimaryButton dark>
             <FontAwesomeIcon icon={faPlus} className="mr-[8px]" />
             Create
