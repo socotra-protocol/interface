@@ -2,9 +2,10 @@ import { PrimaryButton, SecondaryButton } from "../../../components/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons"
 import { Input, LabelInput } from "../../../components/Input"
+import { Layout } from "../../../core/Layout"
 export const ComponentsPage = () => {
   return (
-    <>
+    <Layout>
       <div className="max-w-7xl mx-auto py-10">
         <div>
           Css :{" "}
@@ -39,6 +40,6 @@ export const ComponentsPage = () => {
         <LabelInput label="Request Funds" />
         <LabelInput label="Search" icon={<FontAwesomeIcon icon={faSearch} />} />
       </div>
-    </>
+    </Layout>
   )
 }

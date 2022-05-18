@@ -1,6 +1,10 @@
 import { ReactNode } from "react"
-import { LayoutProvider } from "./LayoutProvider"
+import { Navbar } from "../components/Navbar"
 
 export const SocotraProvider = ({ children }: { children: ReactNode }) => {
-  return <LayoutProvider>{children}</LayoutProvider>
+  return (
+    <div>
+      <div>{children}</div>
+    </div>
+  )
 }

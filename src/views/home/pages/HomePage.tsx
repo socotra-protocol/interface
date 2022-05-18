@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router"
+import { Layout } from "../../../core/Layout"
 export const HomePage = () => {
   const navigate = useNavigate()
 
@@ -6,8 +7,8 @@ export const HomePage = () => {
     navigate("/components")
   }
   return (
-    <>
+    <Layout>
       <div onClick={test}>go</div>
-    </>
+    </Layout>
   )
 }
