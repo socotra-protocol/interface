@@ -93,7 +93,7 @@ export const SelectToken = (props: Props) => {
         </div>
       )}
       {!value && (
-        <div className="mt-[16px] h-[35vh] overflow-scroll">
+        <div className="mt-[16px] h-[500px] overflow-scroll">
           {Array.from({ length: 8 }).map((_, idx: number) => (
             <Token onClick={() => onSelectToken(idx)} key={`token-${idx}`} />
           ))}

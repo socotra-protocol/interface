@@ -69,7 +69,7 @@ export const Member = () => {
           />
         </div>
       </div>
-      <div className="mt-[24px] w-[552px]  h-[35vh] overflow-scroll">
+      <div className="mt-[24px] w-[552px]  h-[500px] overflow-scroll">
         {addresses.map((addr: string, idx: number) => (
           <div
             className="border border-white-dark bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] hover:border-primary"
