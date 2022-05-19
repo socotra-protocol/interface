@@ -6,7 +6,13 @@ import { Layout } from "../../../core/Layout"
 import { MemberCard } from "../../../components/MemberCard"
 import { MemberInput } from "../../../components/MemberInput"
 import { Cover } from "../../../components/Cover"
+import { Modal } from "../../../components/Modal"
+import { useState } from "react"
 export const ComponentsPage = () => {
+  const [visible, setVisible] = useState<boolean>(false)
+  const toggle = () => {
+    setVisible(!visible)
+  }
   return (
     <Layout>
       <div className="max-w-7xl mx-auto py-10">
@@ -50,10 +56,21 @@ export const ComponentsPage = () => {
               <MemberCard key={`member-card-${idx}`} />
             ))}
           </div>
-          <MemberInput />
+          {/* <MemberInput
+            action={
+              <SecondaryButton outlined dark className="h-full">
+                Request Funds
+              </SecondaryButton>
+            }
+          /> */}
         </div>
         <div className="text-2xl mb-5">Cover</div>
         <Cover name="Socotra" onUpload={() => {}} onRename={() => {}} />
+        <div className="text-2xl mb-5">Modal</div>
+        <PrimaryButton onClick={toggle}>toggle</PrimaryButton>
+        <Modal visible={visible}>
+          <div>Socotra</div>
+        </Modal>
       </div>
     </Layout>
   )

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom"
+import { Routes, Route, HashRouter } from "react-router-dom"
 import { SocotraProvider } from "./providers/SocotraProvider"
 import { ComponentsPage } from "./views/components/pages/ComponentsPage"
 import { CreateSubDAOPage } from "./views/createSubDAO/pages/CreateSubDAOPage"
@@ -12,12 +12,11 @@ export default function App() {
     <SocotraProvider>
       <HashRouter>
         <Routes>
-          <Route path="/" element={<HomePage />} />
           <Route path="/components" element={<ComponentsPage />} />
           <Route path="/create-subdao" element={<CreateSubDAOPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/:id" element={<DashboardDetailPage />} />
-          <Route path="/explore" element={<Explore />} />
+          <Route path="/" element={<Explore />} />
         </Routes>
       </HashRouter>
     </SocotraProvider>

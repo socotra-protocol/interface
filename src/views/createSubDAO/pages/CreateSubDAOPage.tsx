@@ -9,8 +9,9 @@ import { useCreateSubDAOStep } from "../../../hooks/useCreateSubDAOStep"
 import { Complete } from "../Complete"
 import { Information } from "../Information"
 import { Member } from "../Member"
-import { ProposalSetting } from "../ProposalSetting"
+import { TokenSetting } from "../TokenSetting"
 import { SelectERC20 } from "../SelectERC20"
+import { SubDAOToken } from "../SubDAOToken"
 
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
@@ -23,8 +24,10 @@ export const CreateSubDAOPage = () => {
         return <Information />
       case CREATE_SUB_DAO_STEP.MEMBER:
         return <Member />
-      case CREATE_SUB_DAO_STEP.PROPOSAL_SETTING:
-        return <ProposalSetting />
+      case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
+        return <TokenSetting token={1} />
+      case CREATE_SUB_DAO_STEP.SPILT_TOKEN_SETTING:
+        return <SubDAOToken />
       case CREATE_SUB_DAO_STEP.COMPLETE:
         return <Complete />
     }
@@ -42,8 +45,9 @@ export const CreateSubDAOPage = () => {
             <Tab label="ERC-20" selected={value >= 1} />
             <Tab label="Information" selected={value >= 2} />
             <Tab label="Member" selected={value >= 3} />
-            <Tab label="Proposal setting" selected={value >= 4} />
-            <Tab label="Complete" selected={value >= 5} />
+            <Tab label="Token setting" selected={value >= 4} />
+            <Tab label="SubDAO Token" selected={value >= 5} />
+            <Tab label="Complete" selected={value >= 6} />
           </Tabs>
         </div>
         <div className="py-[48px]">

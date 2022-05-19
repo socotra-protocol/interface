@@ -1,8 +1,8 @@
 type Props = {
   name: string
   images?: string
-  onUpload: () => void
-  onRename: () => void
+  onUpload?: () => void
+  onRename?: () => void
 }
 export const Cover = (props: Props) => {
   const { images, name, onUpload, onRename } = props

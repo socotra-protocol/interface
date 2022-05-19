@@ -34,6 +34,9 @@ module.exports = {
       gridTemplateColumns: {
         navbar: "220px 1fr 290px",
         member: "230px 1fr 180px",
+        subdao: "400px 1fr",
+        "member-input": "230px 1fr 60px",
+        "dashboard-detail": "320px 1fr",
       },
     },
   },

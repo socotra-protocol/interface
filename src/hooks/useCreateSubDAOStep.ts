@@ -11,7 +11,7 @@ export const useCreateSubDAOStep = (props: Props = {}) => {
   )
 
   const onNext = () => {
-    if (step === 5) {
+    if (step === 6) {
       return
     }
     setStep(step + 1)
