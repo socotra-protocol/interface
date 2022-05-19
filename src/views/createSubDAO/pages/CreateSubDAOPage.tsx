@@ -11,7 +11,6 @@ import { Information } from "../Information"
 import { Member } from "../Member"
 import { TokenSetting } from "../TokenSetting"
 import { SelectERC20 } from "../SelectERC20"
-import { SubDAOToken } from "../SubDAOToken"
 
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
@@ -25,9 +24,7 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.MEMBER:
         return <Member />
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
-        return <TokenSetting token={1} />
-      case CREATE_SUB_DAO_STEP.SPILT_TOKEN_SETTING:
-        return <SubDAOToken />
+        return <TokenSetting />
       case CREATE_SUB_DAO_STEP.COMPLETE:
         return <Complete />
     }
@@ -46,8 +43,7 @@ export const CreateSubDAOPage = () => {
             <Tab label="Information" selected={value >= 2} />
             <Tab label="Member" selected={value >= 3} />
             <Tab label="Token setting" selected={value >= 4} />
-            <Tab label="SubDAO Token" selected={value >= 5} />
-            <Tab label="Complete" selected={value >= 6} />
+            <Tab label="Complete" selected={value >= 5} />
           </Tabs>
         </div>
         <div className="py-[48px]">

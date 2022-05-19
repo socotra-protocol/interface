@@ -5,7 +5,6 @@ import { CreateSubDAOPage } from "./views/createSubDAO/pages/CreateSubDAOPage"
 import { Dashboard } from "./views/dashboard/pages/Dashboard"
 import { DashboardDetailPage } from "./views/dashboardDetail/pages/DashboardDetailPage"
 import { Explore } from "./views/explore/pages/Explore"
-import { HomePage } from "./views/home/pages/HomePage"
 
 export default function App() {
   return (
