@@ -10,6 +10,6 @@ export const navbars = [
   },
   {
     label: "Explore",
-    link: "/explore",
+    link: "/",
   },
 ]
