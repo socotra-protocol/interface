@@ -22,7 +22,7 @@ export const Navbar = () => {
       </Link>
       <div className="flex items-center gap-[32px]">
         {navbars.map((nav: NavbarType, idx: number) => (
-          <Link to={nav.link} key={`link-${idx}`}>
+          <a href={nav.link} key={`link-${idx}`}>
             <div
               className={`hover:text-primary  cursor-pointer ${
                 pathname === nav.link ? "text-primary" : "text-secondary"
@@ -30,7 +30,7 @@ export const Navbar = () => {
             >
               {nav.label}
             </div>
-          </Link>
+          </a>
         ))}
       </div>
       <div className="flex items-center gap-[16px]">
