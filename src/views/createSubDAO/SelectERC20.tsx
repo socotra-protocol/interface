@@ -24,6 +24,7 @@ export const SelectERC20 = (props: Props) => {
           onSelectToken={handleSelectToken}
           onChange={() => {}}
           value={token}
+          labels={["Lock Amount", "Amount"]}
         />
       </div>
     </div>

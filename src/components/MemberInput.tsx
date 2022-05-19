@@ -2,20 +2,24 @@ import { SecondaryButton } from "./Button"
 import { LabelInput } from "./Input"
 import { ProfileMemberCard } from "./MemberCard"
 
-export const MemberInput = () => {
+type Props = {
+  action: React.ReactNode
+  labels: string[]
+}
+// Vote token Rewards token
+export const MemberInput = (props: Props) => {
+  const { action, labels } = props
   return (
     <div className="border border-white-dark p-[24px] grid grid-cols-1 gap-[16px] rounded-[16px] ">
-      <div className="grid grid-cols-member items-center gap-[32px]">
+      <div className="grid grid-cols-member-input items-center gap-[32px]">
         <div className="flex gap-[16px] items-center">
           <ProfileMemberCard />
         </div>
         <div className="flex gap-[24px]">
-          <LabelInput label="Vote token" />
-          <LabelInput label="Rewards token" />
+          <LabelInput label={labels[0]} />
+          <LabelInput label={labels[1]} />
         </div>
-        <SecondaryButton outlined dark className="h-full">
-          Request Funds
-        </SecondaryButton>
+        {action}
       </div>
     </div>
   )

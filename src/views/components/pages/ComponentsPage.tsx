@@ -56,7 +56,13 @@ export const ComponentsPage = () => {
               <MemberCard key={`member-card-${idx}`} />
             ))}
           </div>
-          <MemberInput />
+          {/* <MemberInput
+            action={
+              <SecondaryButton outlined dark className="h-full">
+                Request Funds
+              </SecondaryButton>
+            }
+          /> */}
         </div>
         <div className="text-2xl mb-5">Cover</div>
         <Cover name="Socotra" onUpload={() => {}} onRename={() => {}} />

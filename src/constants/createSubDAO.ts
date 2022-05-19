@@ -2,6 +2,7 @@ export enum CREATE_SUB_DAO_STEP {
   "SELECT_ERC20" = 1,
   "INFORMATION" = 2,
   "MEMBER" = 3,
-  "PROPOSAL_SETTING" = 4,
-  "COMPLETE" = 5,
+  "TOKEN_SETTING" = 4,
+  "SPILT_TOKEN_SETTING" = 5,
+  "COMPLETE" = 6,
 }
