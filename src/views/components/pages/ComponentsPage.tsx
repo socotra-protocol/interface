@@ -3,6 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons"
 import { Input, LabelInput } from "../../../components/Input"
 import { Layout } from "../../../core/Layout"
+import { MemberCard } from "../../../components/MemberCard"
+import { MemberInput } from "../../../components/MemberInput"
+import { Cover } from "../../../components/Cover"
 export const ComponentsPage = () => {
   return (
     <Layout>
@@ -39,6 +42,18 @@ export const ComponentsPage = () => {
         <Input placeholder="Placehoder" />
         <LabelInput label="Request Funds" />
         <LabelInput label="Search" icon={<FontAwesomeIcon icon={faSearch} />} />
+        <hr />
+        <div className="text-2xl mb-5">Card</div>
+        <div className="flex flex-col gap-[16px]">
+          <div className="grid grid-cols-3 gap-[8px]">
+            {Array.from({ length: 3 }).map((_, idx: number) => (
+              <MemberCard key={`member-card-${idx}`} />
+            ))}
+          </div>
+          <MemberInput />
+        </div>
+        <div className="text-2xl mb-5">Cover</div>
+        <Cover name="Zunnoon" onUpload={() => {}} onRename={() => {}} />
       </div>
     </Layout>
   )

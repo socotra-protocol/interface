@@ -6,10 +6,13 @@ export const ProfileMemberCard = () => {
     <>
       <div className="h-[64px] w-[64px] bg-primary-dark rounded-full" />
       <div className="flex flex-col">
-        <div className=" text-secondary-dark text-[16px]">Tanawat</div>
+        {/* <div className=" text-secondary-dark text-[16px]">tanawat.eth</div> */}
         <div className=" text-secondary text-[16px]">
-          tanawat.eth{" "}
-          <FontAwesomeIcon icon={faCopy} className="text-white-dark" />
+          0x222.....2222{" "}
+          <FontAwesomeIcon
+            icon={faCopy}
+            className="text-white-dark cursor-pointer"
+          />
         </div>
       </div>
     </>

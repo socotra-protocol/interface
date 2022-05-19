@@ -1,6 +1,14 @@
-export const Card = () => {
+type Props = {
+  onClick?: () => void
+}
+export const Card = (props: Props) => {
+  const { onClick } = props
+
   return (
-    <div className="border border-white-dark rounded-[32px] cursor-pointer">
+    <div
+      className="border border-white-dark rounded-[32px] cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex gap-[8px] items-center p-[32px]">
         <div className="h-[40px] w-[40px] bg-primary-light rounded-full" />
         <div className="text-[24px] font-medium text-secondary-dark ">

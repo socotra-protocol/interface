@@ -1,6 +1,6 @@
 import { Link, matchRoutes, useParams } from "react-router-dom"
-import { MemberCard } from "../MemberCard"
-import { MemberList } from "../MemberList"
+import { MemberCard } from "../../../components/MemberCard"
+import { MemberInput } from "../../../components/MemberInput"
 
 export const DashboardDetailPage = () => {
   const { id } = useParams()
@@ -8,12 +8,14 @@ export const DashboardDetailPage = () => {
   return (
     <div>
       DashboardDetailPage {id}
-      <div className="grid grid-cols-3 gap-[8px]">
-        {Array.from({ length: 6 }).map((_, idx: number) => (
-          <MemberCard key={`member-card-${idx}`} />
-        ))}
+      <div className="flex flex-col gap-[16px]">
+        <div className="grid grid-cols-3 gap-[8px]">
+          {Array.from({ length: 6 }).map((_, idx: number) => (
+            <MemberCard key={`member-card-${idx}`} />
+          ))}
+        </div>
+        <MemberInput />
       </div>
-      <MemberList />
     </div>
   )
 }
