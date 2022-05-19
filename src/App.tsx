@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route, HashRouter } from "react-router-dom"
 import { SocotraProvider } from "./providers/SocotraProvider"
 import { ComponentsPage } from "./views/components/pages/ComponentsPage"
 import { CreateSubDAOPage } from "./views/createSubDAO/pages/CreateSubDAOPage"
@@ -10,7 +10,7 @@ import { HomePage } from "./views/home/pages/HomePage"
 export default function App() {
   return (
     <SocotraProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/components" element={<ComponentsPage />} />
@@ -19,7 +19,7 @@ export default function App() {
           <Route path="/dashboard/:id" element={<DashboardDetailPage />} />
           <Route path="/explore" element={<Explore />} />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </SocotraProvider>
   )
 }

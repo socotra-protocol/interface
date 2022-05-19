@@ -6,10 +6,10 @@ export type NavbarType = {
 export const navbars = [
   {
     label: "Dashboard",
-    link: "/#dashboard",
+    link: "/dashboard",
   },
   {
     label: "Explore",
-    link: "/#explore",
+    link: "/explore",
   },
 ]

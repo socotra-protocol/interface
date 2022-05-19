@@ -2,7 +2,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { navbars, NavbarType } from "../constants/navbar"
 import { PrimaryButton, SecondaryButton } from "./Button"
-import { Link, matchRoutes, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { useConnectWallet } from "../hooks/useConnectWallet"
 import { useWeb3React } from "@web3-react/core"
 import { truncateAddress } from "../utils/wallet"
@@ -22,7 +22,7 @@ export const Navbar = () => {
       </Link>
       <div className="flex items-center gap-[32px]">
         {navbars.map((nav: NavbarType, idx: number) => (
-          <a href={nav.link} key={`link-${idx}`}>
+          <Link to={nav.link} key={`link-${idx}`}>
             <div
               className={`hover:text-primary  cursor-pointer ${
                 pathname === nav.link ? "text-primary" : "text-secondary"
@@ -30,7 +30,7 @@ export const Navbar = () => {
             >
               {nav.label}
             </div>
-          </a>
+          </Link>
         ))}
       </div>
       <div className="flex items-center gap-[16px]">
