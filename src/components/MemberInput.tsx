@@ -4,7 +4,7 @@ import { ProfileMemberCard } from "./MemberCard"
 
 export const MemberInput = () => {
   return (
-    <div className="border border-white-dark p-[24px] grid grid-cols-1 gap-[16px] ">
+    <div className="border border-white-dark p-[24px] grid grid-cols-1 gap-[16px] rounded-[16px] ">
       <div className="grid grid-cols-member items-center gap-[32px]">
         <div className="flex gap-[16px] items-center">
           <ProfileMemberCard />
@@ -14,7 +14,7 @@ export const MemberInput = () => {
           <LabelInput label="Rewards token" />
         </div>
         <SecondaryButton outlined dark className="h-full">
-          Request Fundss
+          Request Funds
         </SecondaryButton>
       </div>
     </div>
