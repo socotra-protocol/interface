@@ -53,7 +53,7 @@ export const ComponentsPage = () => {
           <MemberInput />
         </div>
         <div className="text-2xl mb-5">Cover</div>
-        <Cover name="Zunnoon" onUpload={() => {}} onRename={() => {}} />
+        <Cover name="Socotra" onUpload={() => {}} onRename={() => {}} />
       </div>
     </Layout>
   )
