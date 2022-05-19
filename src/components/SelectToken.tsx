@@ -31,7 +31,7 @@ const Token = (props: TokenProps) => {
 type SelectedTokenProps = {
   onClear: () => void
   onChange: (value: any) => void
-  labels: string[]
+  labels?: string[]
 }
 const SelectedToken = (props: SelectedTokenProps) => {
   const { onClear, labels, onChange } = props
@@ -53,15 +53,22 @@ const SelectedToken = (props: SelectedTokenProps) => {
           <div className="text-right text-secondary-dark font-medium text-[16px]">
             100
           </div>
-          <FontAwesomeIcon
-            icon={faTimes}
-            className="text-primary-light text-[20px]"
-            onClick={onClear}
-          />
+
+          {labels && (
+            <FontAwesomeIcon
+              icon={faTimes}
+              className="text-primary-light text-[20px]"
+              onClick={onClear}
+            />
+          )}
         </div>
       </div>
-      <LabelInput label={labels[0]} className="mb-[16px]" />
-      <LabelInput label={labels[1]} />
+      {labels && (
+        <>
+          <LabelInput label={labels[0]} className="mb-[16px]" />
+          <LabelInput label={labels[1]} />
+        </>
+      )}
     </div>
   )
 }
@@ -71,7 +78,7 @@ type Props = {
   onSelectToken: (data: any) => void
   value: any
   onChange: (data: any) => void
-  labels: string[]
+  labels?: string[]
 }
 export const SelectToken = (props: Props) => {
   const { onSelectToken, value, labels, onChange } = props
