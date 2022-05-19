@@ -6,7 +6,7 @@ export const Card = (props: Props) => {
   const { label, children } = props
   return (
     <div className="border border-primary-dark rounded-[16px]">
-      <div className="text-white bg-primary-dark text-center rounded-t-[14px]">
+      <div className="text-white bg-primary-dark text-center rounded-t-[14px] py-[8px]">
         {label}
       </div>
       {children}

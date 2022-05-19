@@ -22,7 +22,7 @@ export const Complete = () => {
           <div className="grid gap-[8px] h-[350px] overflow-scroll">
             {Array.from({ length: 8 }).map((_, idx: number) => (
               <div
-                className="border border-white-dark bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] "
+                className="border border-primary bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] "
                 key={`address-${idx}`}
               >
                 <div className="flex gap-[8px] items-center">

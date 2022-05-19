@@ -1,5 +1,6 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useMemo } from "react"
 
 export const ProfileMemberCard = () => {
   return (
@@ -18,9 +19,21 @@ export const ProfileMemberCard = () => {
     </>
   )
 }
-export const MemberCard = () => {
+
+type Props = {
+  size?: "small" | "large"
+}
+export const MemberCard = (props: Props) => {
+  const { size } = props
+
+  const padding = useMemo(() => {
+    if (!size) return "p-[24px]"
+    if (size === "small") return "p-[16px]"
+  }, [size])
   return (
-    <div className="border border-white-dark p-[24px] flex gap-[16px] items-center rounded-[16px]">
+    <div
+      className={`border border-white-dark ${padding}  flex gap-[16px] items-center rounded-[16px]`}
+    >
       <ProfileMemberCard />
     </div>
   )
