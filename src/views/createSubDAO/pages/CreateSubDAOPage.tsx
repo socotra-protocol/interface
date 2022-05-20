@@ -21,6 +21,10 @@ export const CreateSubDAOPage = () => {
     setData(data)
   }
 
+  const handleInformation = (info: { file: File; subDAOname: string }) => {
+    setData({ ...data, ...info })
+  }
+
   console.log(data)
 
   const content = useMemo(() => {
@@ -28,7 +32,7 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.SELECT_ERC20:
         return <SelectERC20 onChange={handleERC20} />
       case CREATE_SUB_DAO_STEP.INFORMATION:
-        return <Information />
+        return <Information onChange={handleInformation} />
       case CREATE_SUB_DAO_STEP.MEMBER:
         return <Member />
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
