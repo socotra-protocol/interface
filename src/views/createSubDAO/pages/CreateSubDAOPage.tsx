@@ -125,7 +125,7 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
         return <TokenSetting data={data!} onChange={handleTokenSetting} />
       case CREATE_SUB_DAO_STEP.COMPLETE:
-        return <Complete data={data!} />
+        return <Complete data={data!} isCompleted={isCompleted} />
     }
   }, [value])
 
