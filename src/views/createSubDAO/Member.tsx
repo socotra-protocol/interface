@@ -8,53 +8,54 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect, useState } from "react"
 import { LabelInput } from "../../components/Input"
 import { useENS } from "../../hooks/useENS"
-export const Member = () => {
-  const { getAddress, getENSName, isValidAddress, isENSName } = useENS()
-  const [addresses, setAddresses] = useState<string[]>([])
-  const [address, setAddress] = useState<string | null>(null)
+
+export type Address = {
+  ens?: string
+  address?: string
+}
+type Props = {
+  onChange: (data: any) => void
+}
+export const Member = (props: Props) => {
+  const { onChange } = props
+  const { getAddress, isValidAddress, isENSName } = useENS()
+  const [addresses, setAddresses] = useState<Address[]>([])
+  const [inputText, setInputText] = useState<string | null>(null)
+  const [address, setAddress] = useState<Address | null>(null)
   const [correct, setCorrect] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  useEffect(() => {
-    // test()
-  }, [])
-
-  const test = async () => {
-    const a = await getAddress(".eth")
-    if (a) {
-      console.log(a)
-      const b = await getENSName(a!)
-      console.log(b)
-    }
-  }
-
   const handleChangeAddress = async (value: string) => {
-    setAddress(value)
+    setInputText(value)
     if (isENSName(value)) {
       setIsLoading(true)
       const address = await getAddress(value)
       setIsLoading(false)
+      if (address) {
+        setAddress({ address, ens: value })
+      }
       setCorrect(address ? true : false)
     } else {
       const status = isValidAddress(value)
+      setAddress({ address: value })
       setCorrect(status)
     }
   }
 
   const handleAddAddress = () => {
-    test()
-
     if (address && correct) {
       const newAddresses = addresses
       setAddresses([address, ...newAddresses])
       setAddress(null)
+      setInputText(null)
       setCorrect(false)
+      onChange({ member: [address, ...newAddresses] })
     }
   }
 
   const handleRemove = (address: string) => {
     const newAddresses = addresses
-    setAddresses(newAddresses.filter((addr) => addr !== address))
+    setAddresses(newAddresses.filter((addr) => addr.address !== address))
   }
   return (
     <div className="flex flex-col items-center justify-center">
@@ -66,8 +67,8 @@ export const Member = () => {
           label="Add address here"
           onChange={(e) => handleChangeAddress(e.target.value)}
           className="w-[464px]"
-          value={address || ""}
-          disabled={isLoading}
+          value={inputText || ""}
+          readOnly={isLoading}
           icon={
             isLoading ? (
               <FontAwesomeIcon
@@ -96,20 +97,20 @@ export const Member = () => {
         </div>
       </div>
       <div className="mt-[24px] w-[552px]  h-[500px] overflow-scroll">
-        {addresses.map((addr: string, idx: number) => (
+        {addresses.map((addr: Address, idx: number) => (
           <div
-            className="border border-white-dark bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] hover:border-primary"
+            className="border border-white-dark bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-8 gap-[8px] items-center mb-[8px] hover:border-primary"
             key={`address-${idx}`}
           >
-            <div className="flex gap-[8px] items-center">
+            <div className="flex gap-[8px] items-center col-span-7">
               <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
-              {addr}
+              <p>{addr?.ens || addr.address}</p>
             </div>
-            <div className="flex justify-end items-center">
+            <div className="flex justify-end items-center w-[32px]">
               <FontAwesomeIcon
                 icon={faTrashCan}
                 className="text-secondary-light cursor-pointer"
-                onClick={() => handleRemove(addr)}
+                onClick={() => handleRemove(addr.address!)}
               />
             </div>
           </div>

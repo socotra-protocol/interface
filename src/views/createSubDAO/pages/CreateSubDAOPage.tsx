@@ -8,7 +8,7 @@ import { Layout } from "../../../core/Layout"
 import { useCreateSubDAOStep } from "../../../hooks/useCreateSubDAOStep"
 import { Complete } from "../Complete"
 import { Information } from "../Information"
-import { Member } from "../Member"
+import { Address, Member } from "../Member"
 import { TokenSetting } from "../TokenSetting"
 import { SelectERC20 } from "../SelectERC20"
 import { TokenType } from "../../../hooks/useCovalent"
@@ -25,6 +25,10 @@ export const CreateSubDAOPage = () => {
     setData({ ...data, ...info })
   }
 
+  const handleMember = (member: Address[]) => {
+    setData({ ...data, ...member })
+  }
+
   console.log(data)
 
   const content = useMemo(() => {
@@ -34,7 +38,7 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.INFORMATION:
         return <Information onChange={handleInformation} />
       case CREATE_SUB_DAO_STEP.MEMBER:
-        return <Member />
+        return <Member onChange={handleMember} />
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
         return <TokenSetting />
       case CREATE_SUB_DAO_STEP.COMPLETE:
