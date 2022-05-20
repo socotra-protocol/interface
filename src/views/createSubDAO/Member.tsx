@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useEffect, useState } from "react"
 import { LabelInput } from "../../components/Input"
 import { useENS } from "../../hooks/useENS"
+import { truncateAddress } from "../../utils/wallet"
 
 export type Address = {
   ens?: string
@@ -104,7 +105,7 @@ export const Member = (props: Props) => {
           >
             <div className="flex gap-[8px] items-center col-span-7">
               <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
-              <p>{addr?.ens || addr.address}</p>
+              <p>{addr?.ens || truncateAddress(addr.address!)}</p>
             </div>
             <div className="flex justify-end items-center w-[32px]">
               <FontAwesomeIcon

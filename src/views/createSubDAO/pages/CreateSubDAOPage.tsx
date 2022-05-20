@@ -17,7 +17,7 @@ export type DataType = {
   token: TokenType
   amount: string
   subDAOname?: string
-  file?: File 
+  file?: File
   member?: { address: string; ens?: string }[]
   allocate?: AllocateType[]
 }
@@ -43,6 +43,7 @@ export const CreateSubDAOPage = () => {
     setData({ ...data, allocate })
   }
 
+  const onSubmit = () => {}
   console.log(data)
 
   const content = useMemo(() => {
@@ -56,9 +57,10 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
         return <TokenSetting data={data} onChange={handleTokenSetting} />
       case CREATE_SUB_DAO_STEP.COMPLETE:
-        return <Complete />
+        return <Complete data={data} />
     }
   }, [value])
+
   return (
     <Layout>
       <div>
@@ -83,8 +85,19 @@ export const CreateSubDAOPage = () => {
               <SecondaryButton outlined dark onClick={onPrev}>
                 Back
               </SecondaryButton>
-              <PrimaryButton dark onClick={onNext}>
-                Next <FontAwesomeIcon icon={faArrowRight} />
+              <PrimaryButton
+                dark
+                onClick={
+                  value === CREATE_SUB_DAO_STEP.COMPLETE ? onSubmit : onNext
+                }
+              >
+                {value === CREATE_SUB_DAO_STEP.COMPLETE ? (
+                  <>Submit</>
+                ) : (
+                  <>
+                    Next <FontAwesomeIcon icon={faArrowRight} />
+                  </>
+                )}
               </PrimaryButton>
             </div>
           </div>

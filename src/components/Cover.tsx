@@ -1,19 +1,20 @@
 type Props = {
   name: string
-  images?: string
+  image?: string
   onUpload?: () => void
   onRename?: () => void
 }
 export const Cover = (props: Props) => {
-  const { images, name, onUpload, onRename } = props
+  const { image, name, onUpload, onRename } = props
   return (
     <div className="relative">
       <img
-        src={images || `/assets/images/subdao-cover.svg`}
+        src={image || `/assets/images/subdao-cover.svg`}
         alt=""
-        className="rounded-[16px]"
+        className="rounded-[16px] w-[275px] h-[275px] object-cover"
       />
-      <div className="text-white-light text-[24px] absolute top-[24px] left-[24px]">
+      <div className=" absolute w-full h-[70px] top-0 bg-black blur-3xl" />
+      <div className="text-white-light text-[24px] absolute top-[24px] left-[24px] drop-shadow-xl">
         {name}
       </div>
     </div>

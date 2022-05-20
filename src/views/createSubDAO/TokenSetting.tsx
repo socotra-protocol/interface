@@ -28,7 +28,7 @@ export const TokenSetting = (props: Props) => {
   const [subDAOtokenAmountInit, setSubDAOtokenAmoutInit] = useState<
     string | null
   >(null)
-  const [subDAOtokenAmount, setSubDAOtokenAmount] = useState("")
+  const [subDAOtokenAmount, setSubDAOtokenAmount] = useState<string | null>(null)
   const [mainDAOtokenAmount, setMainDAOtokenAmount] = useState("")
   const [allocateList, setAllocateList] = useState<AllocateType[]>([])
 
@@ -57,7 +57,7 @@ export const TokenSetting = (props: Props) => {
 
   const calcSubDAOAmount = (allocate?: AllocateType[]) => {
     if (!Boolean(subDAOtokenAmountInit)) {
-      return setSubDAOtokenAmount("---")
+      return setSubDAOtokenAmount(null)
     }
 
     if (allocate) {
@@ -132,6 +132,7 @@ export const TokenSetting = (props: Props) => {
                         end={Number(subDAOtokenAmount)}
                         preserveValue={true}
                         decimals={2}
+                        duration={0.5}
                       />
                     ) : (
                       "---"
@@ -148,6 +149,8 @@ export const TokenSetting = (props: Props) => {
                       end={Number(mainDAOtokenAmount)}
                       preserveValue={true}
                       decimals={2}
+                      duration={0.5}
+
                     />{" "}
                     {data.token.symbol}
                   </div>
