@@ -19,6 +19,8 @@ import { useSocotraFactory } from "../../../hooks/contracts/useSocotraFactory"
 import { useWeb3React } from "@web3-react/core"
 import { parseFixed } from "@ethersproject/bignumber"
 import { useSocotraBranchManager } from "../../../hooks/contracts/useSocotraBranchManager"
+import { wordingCreate } from "../../../constants/wording"
+import { useNavigate } from "react-router"
 export type DataType = {
   token?: TokenType
   amount?: string
@@ -32,9 +34,14 @@ export type DataType = {
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
   const { splitBranch } = useSocotraFactory()
-  const { addBatchAllocation } = useSocotraBranchManager()
-  const [data, setData] = useState<DataType | null>(null)
+  const { addBatchAllocation, branchInfo } = useSocotraBranchManager()
   const { upload } = usePinata()
+  const navigate = useNavigate()
+
+  const [data, setData] = useState<DataType | null>(null)
+  const [loadingStep, setLoadingStep] = useState<number>(0)
+  const [visible, setVisible] = useState<boolean>(false)
+  const [isCompleted, setIsCompleted] = useState<boolean>(false)
 
   const handleERC20 = (data: { token: TokenType; amount: string }) => {
     setData(data)
@@ -61,19 +68,45 @@ export const CreateSubDAOPage = () => {
   }
 
   const onSubmit = async () => {
+    setVisible(true)
     const ipfs = await handleUploadIPFS()
+    console.log(ipfs)
+    setLoadingStep(1)
 
-    await splitBranch(
+    const managerAddr = await splitBranch(
       data?.token?.address!,
       data?.amount!,
       data?.subDAOname!,
       data?.subDAOTokenName!,
       data?.subDAOTokenName!,
-      ipfs
+      ipfs,
+      () => {
+        setLoadingStep(2)
+      }
     )
+    console.log(managerAddr)
+    setLoadingStep(3)
 
-    // await addBatchAllocation()
-    // await test(ipfs)
+    if (data?.allocate) {
+      const allocateList = data.allocate.map((allocate) => {
+        return {
+          memberAddr: allocate.address!,
+          voteAmount: allocate.subDAOAmount!,
+          rewardAmount: allocate.mainDAOAmount!,
+        }
+      })
+
+      await addBatchAllocation(managerAddr!, allocateList)
+    }
+    //
+    setLoadingStep(4)
+
+    const branch = await branchInfo(managerAddr!)
+    //send api
+
+    //
+    setVisible(false)
+    setIsCompleted(true)
   }
 
   const handleUploadIPFS = async () => {
@@ -117,33 +150,48 @@ export const CreateSubDAOPage = () => {
           <div className="py-[48px]">
             <div className="">{content}</div>
             <div className="flex justify-center pt-[53px] ">
-              <div className="grid grid-cols-2 w-[210px] gap-[8px]">
-                <SecondaryButton outlined dark onClick={onPrev}>
-                  Back
-                </SecondaryButton>
-                <PrimaryButton
-                  dark
-                  onClick={
-                    value === CREATE_SUB_DAO_STEP.COMPLETE ? onSubmit : onNext
-                  }
-                >
-                  {value === CREATE_SUB_DAO_STEP.COMPLETE ? (
-                    <>Submit</>
-                  ) : (
-                    <>
-                      Next <FontAwesomeIcon icon={faArrowRight} />
-                    </>
-                  )}
-                </PrimaryButton>
-              </div>
+              {isCompleted ? (
+                <div className="grid grid-cols-1 w-[210px] gap-[8px]">
+                  <PrimaryButton
+                    dark
+                    onClick={() => {
+                      navigate("/dashboard")
+                    }}
+                  >
+                    Go Dashboard
+                  </PrimaryButton>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 w-[210px] gap-[8px]">
+                  <SecondaryButton outlined dark onClick={onPrev}>
+                    Back
+                  </SecondaryButton>
+                  <PrimaryButton
+                    dark
+                    onClick={
+                      value === CREATE_SUB_DAO_STEP.COMPLETE ? onSubmit : onNext
+                    }
+                  >
+                    {value === CREATE_SUB_DAO_STEP.COMPLETE ? (
+                      <>Submit</>
+                    ) : (
+                      <>
+                        Next <FontAwesomeIcon icon={faArrowRight} />
+                      </>
+                    )}
+                  </PrimaryButton>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </Layout>
-      <Modal visible={false}>
-        <div className="bg-white-light h-[90px] w-[300px] rounded-[16px] p-4 border border-white-dark flex items-center justify-center gap-[8px]">
+      <Modal visible={visible}>
+        <div className="bg-white-light h-[90px] w-[400px] rounded-[16px] p-4 border border-white-dark flex items-center justify-center gap-[8px]">
           <img alt="" src="/assets/loading.svg" className="h-[32px] w-[32px]" />
-          <div className="text-[16px text-secondary">text</div>
+          <div className="text-[16px text-secondary">
+            {wordingCreate[loadingStep]}
+          </div>
         </div>
       </Modal>
     </>

@@ -95,9 +95,11 @@ export const useSocotraBranchManager = () => {
     const contract = await getContract(managerAddr)
 
     if (contract) {
-      const txn = await contract.branchInfo()
-      await txn.wait()
-      return txn
+      //imageUrl: "QmP3E3WjQEpja7pUiEr9uXTVc754CyoVKNDfp2k8cb7Fin"
+      // name: "TESTDAO"
+      // parentTokenAddress: "0x073A77ff40b884F3A299C9C7EAe62E37a9A674c7"
+      // voteTokenAddress: "0x
+      return await contract.branchInfo()
     }
     return null
   }

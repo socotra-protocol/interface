@@ -58,30 +58,32 @@ export const Complete = (props: Props) => {
               Members
             </div>
             <div className="text-secondary text-[16px]">
-              {data.member?.length}
+              {data.member?.length} People
             </div>
           </div>
-          <div className="grid gap-[8px] h-[350px] overflow-scroll row-start-3 col-span-2 col-start-2">
-            {data?.allocate
-              ?.slice(1)
-              .map((allocate: AllocateType, idx: number) => (
-                <MembershipsCard
-                  ens={allocate?.ens}
-                  address={allocate?.address}
-                  subDAOAmount={allocate.subDAOAmount}
-                  mainDAOAmount={allocate.mainDAOAmount}
-                  subDAOSymbol={data.subDAOTokenName}
-                  mainDAOSymbol={data?.token?.symbol}
-                  // className="border border-primary bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] h-[70px]"
-                  key={`address-${idx}`}
-                  small
-                />
-                //   <div className="flex gap-[8px] items-center">
-                //     <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
-                //     {allocate?.ens || truncateAddress(allocate.address)}
-                //   </div>
-                // </MembershipsCard>
-              ))}
+          <div className="h-[350px] overflow-scroll row-start-3 col-span-2 col-start-2">
+            <div className="grid gap-[8px] ">
+              {data?.allocate
+                ?.slice(1)
+                .map((allocate: AllocateType, idx: number) => (
+                  <MembershipsCard
+                    ens={allocate?.ens}
+                    address={allocate?.address}
+                    subDAOAmount={allocate.subDAOAmount}
+                    mainDAOAmount={allocate.mainDAOAmount}
+                    subDAOSymbol={data.subDAOTokenName}
+                    mainDAOSymbol={data?.token?.symbol}
+                    // className="border border-primary bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] h-[70px]"
+                    key={`address-${idx}`}
+                    small
+                  />
+                  //   <div className="flex gap-[8px] items-center">
+                  //     <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
+                  //     {allocate?.ens || truncateAddress(allocate.address)}
+                  //   </div>
+                  // </MembershipsCard>
+                ))}
+            </div>
           </div>
         </div>
       </div>
