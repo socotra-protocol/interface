@@ -9,6 +9,7 @@ import { MemberCard, ProfileMemberCard } from "../../components/MemberCard"
 import { MemberInput } from "../../components/MemberInput"
 import { Address } from "./Member"
 import { DataType } from "./pages/CreateSubDAOPage"
+import CountUp from "react-countup"
 
 export type AllocateType = {
   ens?: string
@@ -126,7 +127,16 @@ export const TokenSetting = (props: Props) => {
                     SubDAO token
                   </div>
                   <div className="text-secondary-dark text-[16px] font-medium">
-                    {subDAOtokenAmount || "---"} {subDAOtokenName || "---"}
+                    {subDAOtokenAmount ? (
+                      <CountUp
+                        end={Number(subDAOtokenAmount)}
+                        preserveValue={true}
+                        decimals={2}
+                      />
+                    ) : (
+                      "---"
+                    )}{" "}
+                    {subDAOtokenName || "---"}
                   </div>
                 </div>
                 <div>
@@ -134,7 +144,12 @@ export const TokenSetting = (props: Props) => {
                     MainDAO token
                   </div>
                   <div className="text-secondary-light text-[16px] font-medium">
-                    {mainDAOtokenAmount} {data.token.symbol}
+                    <CountUp
+                      end={Number(mainDAOtokenAmount)}
+                      preserveValue={true}
+                      decimals={2}
+                    />{" "}
+                    {data.token.symbol}
                   </div>
                 </div>
               </div>
