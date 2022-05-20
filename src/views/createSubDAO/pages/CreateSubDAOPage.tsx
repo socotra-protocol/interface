@@ -13,6 +13,7 @@ import { TokenSetting } from "../TokenSetting"
 import { SelectERC20 } from "../SelectERC20"
 import { TokenType } from "../../../hooks/useCovalent"
 import { AllocateType } from "../TokenSetting"
+import { Modal } from "../../../components/Modal"
 export type DataType = {
   token: TokenType
   amount: string
@@ -20,6 +21,8 @@ export type DataType = {
   file?: File
   member?: { address: string; ens?: string }[]
   allocate?: AllocateType[]
+  subDAOTokenName: string
+  subDAOTokenAmount: string
 }
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
@@ -37,10 +40,12 @@ export const CreateSubDAOPage = () => {
     setData({ ...data, member })
   }
 
-  const handleTokenSetting = (
-    allocate: Address[] & { mainDAOamount: string; subDAOamount: string }
-  ) => {
-    setData({ ...data, allocate })
+  const handleTokenSetting = (allocate: {
+    allocate: Address[] & { mainDAOAmount: string; subDAOAmount: string }
+    subDAOTokenName: string
+    subDAOTokenAmount: string
+  }) => {
+    setData({ ...data, ...allocate })
   }
 
   const onSubmit = () => {}
@@ -62,47 +67,49 @@ export const CreateSubDAOPage = () => {
   }, [value])
 
   return (
-    <Layout>
-      <div>
-        <div className="pt-[48px] flex items-center flex-col">
-          <h1 className="text-secondary-dark text-[36px] font-bold">
-            Create new Sub DAO
-          </h1>
-        </div>
-        <div className="mt-[48px]">
-          <Tabs>
-            <Tab label="ERC-20" selected={value >= 1} />
-            <Tab label="Information" selected={value >= 2} />
-            <Tab label="Member" selected={value >= 3} />
-            <Tab label="Token setting" selected={value >= 4} />
-            <Tab label="Complete" selected={value >= 5} />
-          </Tabs>
-        </div>
-        <div className="py-[48px]">
-          <div className="">{content}</div>
-          <div className="flex justify-center pt-[53px] ">
-            <div className="grid grid-cols-2 w-[210px] gap-[8px]">
-              <SecondaryButton outlined dark onClick={onPrev}>
-                Back
-              </SecondaryButton>
-              <PrimaryButton
-                dark
-                onClick={
-                  value === CREATE_SUB_DAO_STEP.COMPLETE ? onSubmit : onNext
-                }
-              >
-                {value === CREATE_SUB_DAO_STEP.COMPLETE ? (
-                  <>Submit</>
-                ) : (
-                  <>
-                    Next <FontAwesomeIcon icon={faArrowRight} />
-                  </>
-                )}
-              </PrimaryButton>
+    <>
+      <Layout>
+        <div>
+          <div className="pt-[48px] flex items-center flex-col">
+            <h1 className="text-secondary-dark text-[36px] font-bold">
+              Create new Sub DAO
+            </h1>
+          </div>
+          <div className="mt-[48px]">
+            <Tabs>
+              <Tab label="ERC-20" selected={value >= 1} />
+              <Tab label="Information" selected={value >= 2} />
+              <Tab label="Member" selected={value >= 3} />
+              <Tab label="Token setting" selected={value >= 4} />
+              <Tab label="Complete" selected={value >= 5} />
+            </Tabs>
+          </div>
+          <div className="py-[48px]">
+            <div className="">{content}</div>
+            <div className="flex justify-center pt-[53px] ">
+              <div className="grid grid-cols-2 w-[210px] gap-[8px]">
+                <SecondaryButton outlined dark onClick={onPrev}>
+                  Back
+                </SecondaryButton>
+                <PrimaryButton
+                  dark
+                  onClick={
+                    value === CREATE_SUB_DAO_STEP.COMPLETE ? onSubmit : onNext
+                  }
+                >
+                  {value === CREATE_SUB_DAO_STEP.COMPLETE ? (
+                    <>Submit</>
+                  ) : (
+                    <>
+                      Next <FontAwesomeIcon icon={faArrowRight} />
+                    </>
+                  )}
+                </PrimaryButton>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   )
 }

@@ -60,8 +60,13 @@ export const Member = (props: Props) => {
   }
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="text-[24px] font-medium text-center mb-[16px]">
-        Add Sub DAO Member
+      <div className="flex items-center justify-between w-[552px] mb-[16px]">
+        <div className="text-[24px] font-medium text-secondary-dark ">
+          Add Sub DAO Member
+        </div>
+        <div className="text-[16px] text-secondary">
+          {addresses.length} People
+        </div>
       </div>
       <div className="flex gap-[8px]">
         <LabelInput

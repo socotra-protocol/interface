@@ -6,18 +6,30 @@ import { truncateAddress } from "../utils/wallet"
 export const ProfileMemberCard = ({
   wallet,
   copy,
+  small,
 }: {
   wallet?: { ens?: string; address: string }
   copy?: boolean
+  small?: boolean
 }) => {
   return (
     <>
-      <div className="h-[64px] w-[64px] bg-primary-light rounded-full" />
+      <div
+        className={` bg-primary-light rounded-full ${
+          small ? "h-[32px] w-[32px]" : "h-[64px] w-[64px]"
+        }`}
+      />
       <div className="flex flex-col">
         <div className=" text-secondary-dark text-[16px]">
-          {wallet?.ens || truncateAddress(wallet?.address!)}
+          {wallet?.ens || truncateAddress(wallet?.address!)}{" "}
+          {copy && (
+            <FontAwesomeIcon
+              icon={faCopy}
+              className="text-white-dark cursor-pointer"
+            />
+          )}
         </div>
-        {wallet?.ens && (
+        {/* {wallet?.ens && (
           <div className=" text-secondary text-[16px]">
             {truncateAddress(wallet?.address!)}{" "}
             {copy && (
@@ -27,7 +39,7 @@ export const ProfileMemberCard = ({
               />
             )}
           </div>
-        )}
+        )} */}
       </div>
     </>
   )

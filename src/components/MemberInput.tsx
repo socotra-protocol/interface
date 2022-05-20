@@ -16,12 +16,12 @@ type Props = {
 // Vote token Rewards token
 export const MemberInput = (props: Props) => {
   const { action, labels, className, wallet, onChange } = props
-  const [subDAOamount, setSubDAOamount] = useState<string>("")
-  const [mainDAOamount, setMainDAOamount] = useState<string>("")
+  const [subDAOAmount, setSubDAOamount] = useState<string>("")
+  const [mainDAOAmount, setMainDAOamount] = useState<string>("")
 
   useEffect(() => {
-    onChange({ subDAOamount, mainDAOamount })
-  }, [subDAOamount, mainDAOamount])
+    onChange({ subDAOAmount, mainDAOAmount })
+  }, [subDAOAmount, mainDAOAmount])
 
   return (
     <div

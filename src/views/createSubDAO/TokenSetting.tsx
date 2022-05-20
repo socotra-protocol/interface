@@ -14,8 +14,8 @@ import CountUp from "react-countup"
 export type AllocateType = {
   ens?: string
   address: string
-  subDAOamount: string
-  mainDAOamount: string
+  subDAOAmount: string
+  mainDAOAmount: string
 }
 type Props = {
   data: DataType
@@ -28,19 +28,21 @@ export const TokenSetting = (props: Props) => {
   const [subDAOtokenAmountInit, setSubDAOtokenAmoutInit] = useState<
     string | null
   >(null)
-  const [subDAOtokenAmount, setSubDAOtokenAmount] = useState<string | null>(null)
+  const [subDAOtokenAmount, setSubDAOtokenAmount] = useState<string | null>(
+    null
+  )
   const [mainDAOtokenAmount, setMainDAOtokenAmount] = useState("")
   const [allocateList, setAllocateList] = useState<AllocateType[]>([])
 
   useEffect(() => {
     setAllocateList([
-      { ens: "ME", address: account!, subDAOamount: "", mainDAOamount: "" },
+      { ens: "ME", address: account!, subDAOAmount: "", mainDAOAmount: "" },
       ...data?.member!.map((member: Address) => {
         return {
           ens: member?.ens,
           address: member.address!,
-          subDAOamount: "",
-          mainDAOamount: "",
+          subDAOAmount: "",
+          mainDAOAmount: "",
         }
       }),
     ])
@@ -62,7 +64,7 @@ export const TokenSetting = (props: Props) => {
 
     if (allocate) {
       const total = allocate.reduce(
-        (acc, all) => Number(all.subDAOamount) + acc,
+        (acc, all) => Number(all.subDAOAmount) + acc,
         0
       )
 
@@ -73,7 +75,7 @@ export const TokenSetting = (props: Props) => {
   const calcMainDAOAmount = (allocate?: AllocateType[]) => {
     if (allocate) {
       const total = allocate.reduce(
-        (acc, all) => Number(all.mainDAOamount) + acc,
+        (acc, all) => Number(all.mainDAOAmount) + acc,
         0
       )
 
@@ -83,13 +85,17 @@ export const TokenSetting = (props: Props) => {
 
   const handleAllocate = (
     address: string,
-    amount: { subDAOamount: string; mainDAOamount: string }
+    amount: { subDAOAmount: string; mainDAOAmount: string }
   ) => {
     const newAllocateList = allocateList
     const idx = newAllocateList.findIndex((item) => item.address === address)
     newAllocateList[idx] = { ...newAllocateList[idx], ...amount }
     setAllocateList(newAllocateList)
-    onChange(newAllocateList)
+    onChange({
+      allocate: newAllocateList,
+      subDAOTokenAmount: subDAOtokenAmountInit,
+      subDAOTokenName: subDAOtokenName,
+    })
 
     //must move
     calcSubDAOAmount(newAllocateList)
@@ -150,7 +156,6 @@ export const TokenSetting = (props: Props) => {
                       preserveValue={true}
                       decimals={2}
                       duration={0.5}
-
                     />{" "}
                     {data.token.symbol}
                   </div>

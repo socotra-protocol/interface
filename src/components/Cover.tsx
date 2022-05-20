@@ -13,7 +13,7 @@ export const Cover = (props: Props) => {
         alt=""
         className="rounded-[16px] w-[275px] h-[275px] object-cover"
       />
-      <div className=" absolute w-full h-[70px] top-0 bg-black blur-3xl" />
+      <div className=" absolute w-[275px] h-[10px] top-0 drop-shadow-[0_35px_35px_rgba(0,0,0,1)]" />
       <div className="text-white-light text-[24px] absolute top-[24px] left-[24px] drop-shadow-xl">
         {name}
       </div>

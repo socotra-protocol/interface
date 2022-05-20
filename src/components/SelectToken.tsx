@@ -41,9 +41,10 @@ type SelectedTokenProps = {
   onChange: (value: any) => void
   labels?: any[]
   value: any
+  selected?: boolean
 }
 const SelectedToken = (props: SelectedTokenProps) => {
-  const { onClear, labels, value, onChange } = props
+  const { onClear, labels, value, selected, onChange } = props
   const [inputValue, setInputValue] = useState<
     { label: string; value: string }[]
   >([])
@@ -62,7 +63,13 @@ const SelectedToken = (props: SelectedTokenProps) => {
 
   return (
     <div>
-      <div className="w-[454px] cursor-pointer border  bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] border-primary">
+      <div
+        className={` cursor-pointer  px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] border-primary ${
+          selected
+            ? "bg-white-dark border-none w-full"
+            : "border  bg-white-light w-[454px]"
+        }`}
+      >
         <div className="flex items-center gap-[8px]">
           <div>
             <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
@@ -109,9 +116,10 @@ type Props = {
   onChange: (data: any) => void
   labels?: any[]
   tokens?: any[]
+  selected?: boolean
 }
 export const SelectToken = (props: Props) => {
-  const { onSelectToken, value, labels, tokens, onChange } = props
+  const { onSelectToken, value, labels, tokens, selected, onChange } = props
   return (
     <div>
       {value ? (
@@ -120,6 +128,7 @@ export const SelectToken = (props: Props) => {
           onClear={() => onSelectToken(null)}
           onChange={(value: any) => onChange(value)}
           value={value}
+          selected={selected}
         />
       ) : (
         <div className="relative border border-white-dark bg-white-light px-[16px] py-[20px] rounded-[8px]  ">
