@@ -1,10 +1,10 @@
-import { parseFixed } from "@ethersproject/bignumber"
+import { formatFixed, parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import ERC20ABI from "../../abis/ERC20abi.json"
 
 export const useERC20 = () => {
-  const { library, active, chainId } = useWeb3React()
+  const { library, active, chainId, account } = useWeb3React()
 
   const getContract = (address: string) => {
     if (!active || !chainId) return
@@ -14,6 +14,35 @@ export const useERC20 = () => {
 
     const contract = new ethers.Contract(address, ERC20ABI, signer)
     return contract
+  }
+
+  const decimals = async (erc20Address: string) => {
+    const contract = await getContract(erc20Address)
+    if (contract) {
+      return await contract.decimals()
+    }
+    return null
+  }
+  const name = async (erc20Address: string) => {
+    const contract = await getContract(erc20Address)
+    if (contract) {
+      return await contract.name()
+    }
+    return null
+  }
+  const balanceOf = async (erc20Address: string) => {
+    const contract = await getContract(erc20Address)
+    if (contract) {
+      return await contract.balanceOf(account)
+    }
+    return null
+  }
+  const symbol = async (erc20Address: string) => {
+    const contract = await getContract(erc20Address)
+    if (contract) {
+      return await contract.symbol()
+    }
+    return null
   }
 
   const approve = async (
@@ -31,5 +60,30 @@ export const useERC20 = () => {
       await tx.wait()
     }
   }
-  return { getContract, approve }
+
+  const tokenInfo = async (
+    erc20Address: string
+  ): Promise<{
+    symbol: string
+    balance: string
+    name: string
+    decimals: string
+    address: string
+    logo: string
+  }> => {
+    const _symbol = await symbol(erc20Address)
+    const _balance = await balanceOf(erc20Address)
+    const _name = await name(erc20Address)
+    const _decimals = await decimals(erc20Address)
+
+    return {
+      symbol: _symbol,
+      balance: formatFixed(_balance, _decimals),
+      name: _name,
+      decimals: _decimals,
+      address: erc20Address,
+      logo: "",
+    }
+  }
+  return { getContract, approve, decimals, name, balanceOf, symbol, tokenInfo }
 }

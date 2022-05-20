@@ -117,9 +117,18 @@ type Props = {
   labels?: any[]
   tokens?: any[]
   selected?: boolean
+  onChangeInput?: (data: any) => void
 }
 export const SelectToken = (props: Props) => {
-  const { onSelectToken, value, labels, tokens, selected, onChange } = props
+  const {
+    onSelectToken,
+    value,
+    labels,
+    tokens,
+    selected,
+    onChange,
+    onChangeInput,
+  } = props
   return (
     <div>
       {value ? (
@@ -135,6 +144,7 @@ export const SelectToken = (props: Props) => {
           <input
             placeholder="Search or address"
             className="focus:outline-none w-[400px] placeholder:text-secondary-light placeholder:text-[12px]"
+            onChange={(e) => onChangeInput && onChangeInput(e.target.value)}
           />
           <FontAwesomeIcon
             icon={faSearch}

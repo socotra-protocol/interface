@@ -53,7 +53,7 @@ export const useSocotraFactory = () => {
         tokenSymbol
       )
       await txn.wait()
-      console.log(txn.hash)
+      console.log(txn, txn.hash)
     }
   }
   return { splitBranch }

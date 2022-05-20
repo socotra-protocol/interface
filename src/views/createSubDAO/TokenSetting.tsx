@@ -157,7 +157,7 @@ export const TokenSetting = (props: Props) => {
                       decimals={2}
                       duration={0.5}
                     />{" "}
-                    {data.token.symbol}
+                    {data?.token?.symbol}
                   </div>
                 </div>
               </div>

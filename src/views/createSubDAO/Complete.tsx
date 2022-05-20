@@ -35,7 +35,7 @@ export const Complete = (props: Props) => {
               value={{
                 ...data?.token,
                 symbol: "MainDAO Token",
-                name: data?.token.symbol,
+                name: data?.token?.symbol,
               }}
               onSelectToken={() => {}}
               onChange={() => {}}
@@ -71,7 +71,7 @@ export const Complete = (props: Props) => {
                   subDAOAmount={allocate.subDAOAmount}
                   mainDAOAmount={allocate.mainDAOAmount}
                   subDAOSymbol={data.subDAOTokenName}
-                  mainDAOSymbol={data.token.symbol}
+                  mainDAOSymbol={data?.token?.symbol}
                   // className="border border-primary bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] h-[70px]"
                   key={`address-${idx}`}
                   small

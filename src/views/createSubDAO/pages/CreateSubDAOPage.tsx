@@ -18,20 +18,22 @@ import { usePinata } from "../../../hooks/usePinata"
 import { useSocotraFactory } from "../../../hooks/contracts/useSocotraFactory"
 import { useWeb3React } from "@web3-react/core"
 import { parseFixed } from "@ethersproject/bignumber"
+import { useSocotraBranchManager } from "../../../hooks/contracts/useSocotraBranchManager"
 export type DataType = {
-  token: TokenType
-  amount: string
+  token?: TokenType
+  amount?: string
   subDAOname?: string
   file?: File
-  member?: { address: string; ens?: string }[]
+  member?: { address?: string; ens?: string }[]
   allocate?: AllocateType[]
-  subDAOTokenName: string
-  subDAOTokenAmount: string
+  subDAOTokenName?: string
+  subDAOTokenAmount?: string
 }
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
   const { splitBranch } = useSocotraFactory()
-  const [data, setData] = useState<any>(null)
+  const { addBatchAllocation } = useSocotraBranchManager()
+  const [data, setData] = useState<DataType | null>(null)
   const { upload } = usePinata()
 
   const handleERC20 = (data: { token: TokenType; amount: string }) => {
@@ -46,21 +48,36 @@ export const CreateSubDAOPage = () => {
     setData({ ...data, member })
   }
 
-  const handleTokenSetting = (allocate: {
-    allocate: Address[] & { mainDAOAmount: string; subDAOAmount: string }
+  const handleTokenSetting = ({
+    allocate,
+    subDAOTokenName,
+    subDAOTokenAmount,
+  }: {
+    allocate: AllocateType[]
     subDAOTokenName: string
     subDAOTokenAmount: string
   }) => {
-    setData({ ...data, ...allocate })
+    setData({ ...data, allocate, subDAOTokenName, subDAOTokenAmount })
   }
 
   const onSubmit = async () => {
     const ipfs = await handleUploadIPFS()
+
+    await splitBranch(
+      data?.token?.address!,
+      data?.amount!,
+      data?.subDAOname!,
+      data?.subDAOTokenName!,
+      data?.subDAOTokenName!,
+      ipfs
+    )
+
+    // await addBatchAllocation()
     // await test(ipfs)
   }
 
   const handleUploadIPFS = async () => {
-    const ipfs = await upload(data.file)
+    const ipfs = await upload(data?.file)
     return ipfs
   }
 
@@ -73,9 +90,9 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.MEMBER:
         return <Member onChange={handleMember} />
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
-        return <TokenSetting data={data} onChange={handleTokenSetting} />
+        return <TokenSetting data={data!} onChange={handleTokenSetting} />
       case CREATE_SUB_DAO_STEP.COMPLETE:
-        return <Complete data={data} />
+        return <Complete data={data!} />
     }
   }, [value])
 

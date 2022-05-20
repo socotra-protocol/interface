@@ -88,5 +88,23 @@ export const useSocotraBranchManager = () => {
       console.log(txn.hash)
     }
   }
-  return { addMemberAllocation, addBatchAllocation, memberClaimToken }
+
+  const branchInfo = async (managerAddr: string) => {
+    if (!active || !chainId) return
+
+    const contract = await getContract(managerAddr)
+
+    if (contract) {
+      const txn = await contract.branchInfo()
+      await txn.wait()
+      return txn
+    }
+    return null
+  }
+  return {
+    addMemberAllocation,
+    addBatchAllocation,
+    memberClaimToken,
+    branchInfo,
+  }
 }
