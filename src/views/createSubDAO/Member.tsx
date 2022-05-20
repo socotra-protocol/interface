@@ -4,13 +4,27 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LabelInput } from "../../components/Input"
-
+import { useENS } from "../../hooks/useENS"
 export const Member = () => {
+  const { getAddress, getENSName } = useENS()
   const [addresses, setAddresses] = useState<string[]>([])
   const [address, setAddress] = useState<string | null>(null)
   const [correct, setCorrect] = useState<boolean>(false)
+
+  useEffect(() => {
+    // test()
+  }, [])
+
+  const test = async () => {
+    const a = await getAddress(".eth")
+    if (a) {
+      console.log(a)
+      const b = await getENSName(a!)
+      console.log(b)
+    }
+  }
   const verifyAddress = (address: string) => {
     if (address.length < 5) {
       return false
@@ -24,6 +38,8 @@ export const Member = () => {
   }
 
   const handleAddAddress = () => {
+    test()
+
     if (address && correct) {
       const newAddresses = addresses
       setAddresses([address, ...newAddresses])
