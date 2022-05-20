@@ -1,6 +1,7 @@
 import {
   faCircleCheck,
   faPlus,
+  faSpinner,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -8,10 +9,11 @@ import { useEffect, useState } from "react"
 import { LabelInput } from "../../components/Input"
 import { useENS } from "../../hooks/useENS"
 export const Member = () => {
-  const { getAddress, getENSName } = useENS()
+  const { getAddress, getENSName, isValidAddress, isENSName } = useENS()
   const [addresses, setAddresses] = useState<string[]>([])
   const [address, setAddress] = useState<string | null>(null)
   const [correct, setCorrect] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     // test()
@@ -25,16 +27,18 @@ export const Member = () => {
       console.log(b)
     }
   }
-  const verifyAddress = (address: string) => {
-    if (address.length < 5) {
-      return false
+
+  const handleChangeAddress = async (value: string) => {
+    setAddress(value)
+    if (isENSName(value)) {
+      setIsLoading(true)
+      const address = await getAddress(value)
+      setIsLoading(false)
+      setCorrect(address ? true : false)
+    } else {
+      const status = isValidAddress(value)
+      setCorrect(status)
     }
-    return true
-  }
-  const handleChangeAddress = (address: string) => {
-    setAddress(address)
-    const status = verifyAddress(address)
-    setCorrect(status)
   }
 
   const handleAddAddress = () => {
@@ -63,8 +67,14 @@ export const Member = () => {
           onChange={(e) => handleChangeAddress(e.target.value)}
           className="w-[464px]"
           value={address || ""}
+          disabled={isLoading}
           icon={
-            correct ? (
+            isLoading ? (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className="text-primary-dark text-[18px]"
+              />
+            ) : correct ? (
               <FontAwesomeIcon
                 icon={faCircleCheck}
                 className="text-primary-dark text-[18px]"

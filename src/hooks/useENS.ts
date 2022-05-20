@@ -30,5 +30,10 @@ export const useENS = () => {
     })
   }
 
-  return { getAddress, getENSName }
+  const isENSName = (text: string) => {
+    const dotETH = text.indexOf(".eth")
+    return dotETH === -1 ? false : true
+  }
+
+  return { getAddress, getENSName, isENSName, isValidAddress }
 }
