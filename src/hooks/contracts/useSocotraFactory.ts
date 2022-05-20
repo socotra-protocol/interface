@@ -1,3 +1,4 @@
+import { parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import SocotraFactoryABI from "../../abis/SocotraFactory.json"
@@ -33,7 +34,8 @@ export const useSocotraFactory = () => {
     name: string,
     tokenName: string,
     tokenSymbol: string,
-    imageUrl: string
+    imageUrl: string,
+    decimal = 18
   ) => {
     if (!active || !chainId) return
 
@@ -44,7 +46,7 @@ export const useSocotraFactory = () => {
     if (contract) {
       const txn = await contract.splitBranch(
         parentToken,
-        amount,
+        parseFixed(amount, decimal).toString(),
         name,
         imageUrl,
         tokenName,
