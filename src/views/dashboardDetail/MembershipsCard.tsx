@@ -1,4 +1,3 @@
-import { LabelInput } from "../../components/Input"
 import { ProfileMemberCard } from "../../components/MemberCard"
 
 type Props = {

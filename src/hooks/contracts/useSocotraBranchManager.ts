@@ -2,11 +2,17 @@ import { parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import SocotraBranchManagerABI from "../../abis/SocotraBranchManager.json"
-import { useERC20 } from "./useERC20"
+import { string2Bin } from "../../utils/string"
+
+export type BranchInfo = {
+  imageUrl: string
+  name: string
+  parentTokenAddress: string
+  voteTokenAddress: string
+}
 
 export const useSocotraBranchManager = () => {
   const { library, active, chainId } = useWeb3React()
-  const { approve } = useERC20()
 
   const getContract = (address: string) => {
     if (!active || !chainId) return
@@ -89,17 +95,37 @@ export const useSocotraBranchManager = () => {
     }
   }
 
-  const branchInfo = async (managerAddr: string) => {
-    if (!active || !chainId) return
+  const branchInfo = async (
+    managerAddr: string
+  ): Promise<BranchInfo | null> => {
+    if (!active || !chainId) return null
 
     const contract = await getContract(managerAddr)
 
     if (contract) {
-      //imageUrl: "QmP3E3WjQEpja7pUiEr9uXTVc754CyoVKNDfp2k8cb7Fin"
-      // name: "TESTDAO"
-      // parentTokenAddress: "0x073A77ff40b884F3A299C9C7EAe62E37a9A674c7"
-      // voteTokenAddress: "0x
       return await contract.branchInfo()
+    }
+    return null
+  }
+
+  const requestPayout = async (
+    managerAddr: string,
+    amount: string,
+    receiver: string,
+    proof: string,
+    decimal = 18
+  ) => {
+    if (!active || !chainId) return null
+
+    const contract = await getContract(managerAddr)
+
+    if (contract) {
+      return await contract.requestPayout(
+        parseFixed(amount, decimal).toString(),
+        receiver,
+        string2Bin(proof),
+        { gasLimit: 41000 }
+      )
     }
     return null
   }
@@ -108,5 +134,6 @@ export const useSocotraBranchManager = () => {
     addBatchAllocation,
     memberClaimToken,
     branchInfo,
+    requestPayout,
   }
 }

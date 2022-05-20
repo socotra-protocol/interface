@@ -7,6 +7,7 @@ export type TokenType = {
   name: string
   logo: string
   address: string
+  decimals?: string;
 }
 
 const key = process.env.REACT_APP_COVALENTHQ_KEY

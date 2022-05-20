@@ -1,34 +1,72 @@
-import { Link, matchRoutes, useParams } from "react-router-dom"
+import { formatFixed } from "@ethersproject/bignumber"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 import { SecondaryButton } from "../../../components/Button"
 import { Cover } from "../../../components/Cover"
 import { MemberCard } from "../../../components/MemberCard"
-import { MemberInput } from "../../../components/MemberInput"
+import { SelectToken } from "../../../components/SelectToken"
 import { Layout } from "../../../core/Layout"
+import { useERC20 } from "../../../hooks/contracts/useERC20"
+import {
+  BranchInfo,
+  useSocotraBranchManager,
+} from "../../../hooks/contracts/useSocotraBranchManager"
+import { TokenType } from "../../../hooks/useCovalent"
 import { MembershipsCard } from "../MembershipsCard"
 import { Payout } from "../Payout"
 import { Proposal } from "../Proposal"
 
 export const DashboardDetailPage = () => {
-  const { id } = useParams()
+  const { id: managerAddr } = useParams()
+  const { branchInfo } = useSocotraBranchManager()
+  const { tokenInfo } = useERC20()
+  const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
+  const [mainDAOToken, setMainToken] = useState<TokenType | null>(null)
+  const [subDAOToken, setSubToken] = useState<TokenType | null>(null)
   const isMember = true
+
+  useEffect(() => {
+    // fetchInfo()
+  }, [])
+
+  const fetchInfo = async () => {
+    const info = await branchInfo(managerAddr!)
+    setSubDAO(info)
+
+    const mainDAO = await tokenInfo(info?.parentTokenAddress!)
+    console.log("mainDAO", mainDAO)
+    const subDAO = await tokenInfo(info?.voteTokenAddress!)
+    console.log("subDAO", subDAO)
+  }
+
   return (
     <Layout>
       <div className="grid grid-cols-dashboard-detail">
         <div className="bg-white-light p-[32px] min-h-screen  border-r border-white-dark">
-          <Cover name={id!} />
+          <Cover name={subDAO?.name!} />
           <div className="py-[32px]">
-            <div className="flex items-center justify-between">
-              <div className="text-secondary-dark text-[16px] font-medium">
-                Reward token
-              </div>
-              <div className="text-secondary text-[16px]">3000 dCRV</div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="text-secondary-dark text-[16px] font-medium">
-                Vote token
-              </div>
-              <div className="text-secondary text-[16px]">4000 CRV</div>
-            </div>
+            <SelectToken
+              value={{
+                symbol: "MainDAO",
+                address: "",
+                name: "",
+                balance: "",
+              }}
+              onSelectToken={() => {}}
+              onChange={() => {}}
+              selected
+            />
+            <SelectToken
+              value={{
+                address: "",
+                symbol: "SubDAO",
+                name: "",
+                balance: "",
+              }}
+              onSelectToken={() => {}}
+              onChange={() => {}}
+              selected
+            />
           </div>
           <div className=" text-secondary-dark text-[24px] font-medium mb-[16px]">
             Owner
@@ -56,16 +94,18 @@ export const DashboardDetailPage = () => {
             </div>
             <div className="grid gap-[8px]">
               {Array.from({ length: 9 }).map((_, idx: number) => (
-                <></>
-                // <MembershipsCard
-                //   key={`member-${idx}`}
-                //   action={
-                //     <SecondaryButton outlined dark>
-                //       Payout
-                //     </SecondaryButton>
-                //   }
-                //   labels={["Vote token", "Rewards token"]}
-                // />
+                <MembershipsCard
+                  key={`member-${idx}`}
+                  address={""}
+                  subDAOAmount={"1"}
+                  mainDAOAmount={"1"}
+                  action={
+                    <SecondaryButton outlined dark>
+                      Payout
+                    </SecondaryButton>
+                  }
+                  labels={["Vote token", "Rewards token"]}
+                />
               ))}
             </div>
           </div>

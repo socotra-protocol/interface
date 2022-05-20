@@ -1,9 +1,15 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-
-export const Card = () => {
+type Props = {
+  onClick?: () => void
+}
+export const Card = (props: Props) => {
+  const { onClick } = props
   return (
-    <div className="border border-white-dark rounded-[32px] cursor-pointer">
+    <div
+      className="border border-white-dark rounded-[32px] cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex gap-[8px] items-center p-[32px]">
         <div className="h-[64px] w-[64px] bg-primary-light rounded-full" />
         <div>
