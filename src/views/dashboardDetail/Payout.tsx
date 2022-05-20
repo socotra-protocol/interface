@@ -10,12 +10,10 @@ export const Payout = () => {
           <div className="flex justify-between">
             <MemberCard size="small" />
             <div>
-              <SecondaryButton outlined light>
+              {/* <SecondaryButton outlined light>
                 Claim funds
-              </SecondaryButton>
-              <PrimaryButton dark className="ml-[8px]">
-                Payout
-              </PrimaryButton>
+              </SecondaryButton> */}
+              <PrimaryButton dark>Request Funds</PrimaryButton>
             </div>
           </div>
         </div>

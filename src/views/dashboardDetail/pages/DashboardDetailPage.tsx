@@ -4,6 +4,7 @@ import { Cover } from "../../../components/Cover"
 import { MemberCard } from "../../../components/MemberCard"
 import { MemberInput } from "../../../components/MemberInput"
 import { Layout } from "../../../core/Layout"
+import { MembershipsCard } from "../MembershipsCard"
 import { Payout } from "../Payout"
 import { Proposal } from "../Proposal"
 
@@ -38,7 +39,7 @@ export const DashboardDetailPage = () => {
           {isMember && <Payout />}
           <Proposal />
           <div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mb-[16px]">
               <div className="flex items-center gap-[8px]">
                 <div className="text-secondary-dark text-[24px] font-medium">
                   Memberships
@@ -48,16 +49,20 @@ export const DashboardDetailPage = () => {
                 </div>
               </div>
               <div>
-                <SecondaryButton outlined dark>
+                {/* <SecondaryButton outlined dark>
                   Manage member
-                </SecondaryButton>
+                </SecondaryButton> */}
               </div>
             </div>
-            <div>
+            <div className="grid gap-[8px]">
               {Array.from({ length: 9 }).map((_, idx: number) => (
-                <MemberInput
+                <MembershipsCard
                   key={`member-${idx}`}
-                  action={<SecondaryButton outlined dark>Request Funds</SecondaryButton>}
+                  action={
+                    <SecondaryButton outlined dark>
+                      Payout
+                    </SecondaryButton>
+                  }
                   labels={["Vote token", "Rewards token"]}
                 />
               ))}

@@ -3,6 +3,5 @@ export enum CREATE_SUB_DAO_STEP {
   "INFORMATION" = 2,
   "MEMBER" = 3,
   "TOKEN_SETTING" = 4,
-  "SPILT_TOKEN_SETTING" = 5,
-  "COMPLETE" = 6,
+  "COMPLETE" = 5,
 }

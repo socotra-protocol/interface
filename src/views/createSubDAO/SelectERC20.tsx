@@ -18,13 +18,13 @@ export const SelectERC20 = (props: Props) => {
     <div className="flex justify-center">
       <div>
         <h1 className="text-secondary-dark font-medium text-[24px] mb-[16px] text-center">
-          Select your main token
+          Select your MainDAO token
         </h1>
         <SelectToken
           onSelectToken={handleSelectToken}
           onChange={() => {}}
           value={token}
-          labels={["Lock Amount", "Amount"]}
+          labels={["Amount"]}
         />
       </div>
     </div>

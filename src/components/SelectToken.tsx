@@ -63,12 +63,10 @@ const SelectedToken = (props: SelectedTokenProps) => {
           )}
         </div>
       </div>
-      {labels && (
-        <>
-          <LabelInput label={labels[0]} className="mb-[16px]" />
-          <LabelInput label={labels[1]} />
-        </>
-      )}
+      {labels &&
+        labels.map((label) => (
+          <LabelInput label={label} className="mb-[16px]" />
+        ))}
     </div>
   )
 }
