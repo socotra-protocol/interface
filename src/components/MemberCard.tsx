@@ -1,20 +1,45 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useMemo } from "react"
+import { truncateAddress } from "../utils/wallet"
 
-export const ProfileMemberCard = () => {
+export const ProfileMemberCard = ({
+  wallet,
+  copy,
+  small,
+}: {
+  wallet?: { ens?: string; address: string }
+  copy?: boolean
+  small?: boolean
+}) => {
   return (
     <>
-      <div className="h-[64px] w-[64px] bg-primary-dark rounded-full" />
+      <div
+        className={` bg-primary-light rounded-full ${
+          small ? "h-[32px] w-[32px]" : "h-[64px] w-[64px]"
+        }`}
+      />
       <div className="flex flex-col">
-        <div className=" text-secondary-dark text-[16px]">tanawat.eth</div>
-        <div className=" text-secondary text-[16px]">
-          0x222.....2222{" "}
-          <FontAwesomeIcon
-            icon={faCopy}
-            className="text-white-dark cursor-pointer"
-          />
+        <div className=" text-secondary-dark text-[16px]">
+          {wallet?.ens || truncateAddress(wallet?.address!)}{" "}
+          {copy && (
+            <FontAwesomeIcon
+              icon={faCopy}
+              className="text-white-dark cursor-pointer"
+            />
+          )}
         </div>
+        {/* {wallet?.ens && (
+          <div className=" text-secondary text-[16px]">
+            {truncateAddress(wallet?.address!)}{" "}
+            {copy && (
+              <FontAwesomeIcon
+                icon={faCopy}
+                className="text-white-dark cursor-pointer"
+              />
+            )}
+          </div>
+        )} */}
       </div>
     </>
   )

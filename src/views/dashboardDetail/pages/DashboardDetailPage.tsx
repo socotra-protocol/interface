@@ -56,15 +56,16 @@ export const DashboardDetailPage = () => {
             </div>
             <div className="grid gap-[8px]">
               {Array.from({ length: 9 }).map((_, idx: number) => (
-                <MembershipsCard
-                  key={`member-${idx}`}
-                  action={
-                    <SecondaryButton outlined dark>
-                      Payout
-                    </SecondaryButton>
-                  }
-                  labels={["Vote token", "Rewards token"]}
-                />
+                <></>
+                // <MembershipsCard
+                //   key={`member-${idx}`}
+                //   action={
+                //     <SecondaryButton outlined dark>
+                //       Payout
+                //     </SecondaryButton>
+                //   }
+                //   labels={["Vote token", "Rewards token"]}
+                // />
               ))}
             </div>
           </div>

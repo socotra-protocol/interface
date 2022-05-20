@@ -1,26 +1,46 @@
 import {
   faCircleCheck,
   faPlus,
+  faSpinner,
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LabelInput } from "../../components/Input"
+import { useENS } from "../../hooks/useENS"
+import { truncateAddress } from "../../utils/wallet"
 
-export const Member = () => {
-  const [addresses, setAddresses] = useState<string[]>([])
-  const [address, setAddress] = useState<string | null>(null)
+export type Address = {
+  ens?: string
+  address?: string
+}
+type Props = {
+  onChange: (data: any) => void
+}
+export const Member = (props: Props) => {
+  const { onChange } = props
+  const { getAddress, isValidAddress, isENSName } = useENS()
+  const [addresses, setAddresses] = useState<Address[]>([])
+  const [inputText, setInputText] = useState<string | null>(null)
+  const [address, setAddress] = useState<Address | null>(null)
   const [correct, setCorrect] = useState<boolean>(false)
-  const verifyAddress = (address: string) => {
-    if (address.length < 5) {
-      return false
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+
+  const handleChangeAddress = async (value: string) => {
+    setInputText(value)
+    if (isENSName(value)) {
+      setIsLoading(true)
+      const address = await getAddress(value)
+      setIsLoading(false)
+      if (address) {
+        setAddress({ address, ens: value })
+      }
+      setCorrect(address ? true : false)
+    } else {
+      const status = isValidAddress(value)
+      setAddress({ address: value })
+      setCorrect(status)
     }
-    return true
-  }
-  const handleChangeAddress = (address: string) => {
-    setAddress(address)
-    const status = verifyAddress(address)
-    setCorrect(status)
   }
 
   const handleAddAddress = () => {
@@ -28,27 +48,40 @@ export const Member = () => {
       const newAddresses = addresses
       setAddresses([address, ...newAddresses])
       setAddress(null)
+      setInputText(null)
       setCorrect(false)
+      onChange([address, ...newAddresses])
     }
   }
 
   const handleRemove = (address: string) => {
     const newAddresses = addresses
-    setAddresses(newAddresses.filter((addr) => addr !== address))
+    setAddresses(newAddresses.filter((addr) => addr.address !== address))
   }
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="text-[24px] font-medium text-center mb-[16px]">
-        Add Sub DAO Member
+      <div className="flex items-center justify-between w-[552px] mb-[16px]">
+        <div className="text-[24px] font-medium text-secondary-dark ">
+          Add Sub DAO Member
+        </div>
+        <div className="text-[16px] text-secondary">
+          {addresses.length} People
+        </div>
       </div>
       <div className="flex gap-[8px]">
         <LabelInput
           label="Add address here"
           onChange={(e) => handleChangeAddress(e.target.value)}
           className="w-[464px]"
-          value={address || ""}
+          value={inputText || ""}
+          readOnly={isLoading}
           icon={
-            correct ? (
+            isLoading ? (
+              <FontAwesomeIcon
+                icon={faSpinner}
+                className="text-primary-dark text-[18px]"
+              />
+            ) : correct ? (
               <FontAwesomeIcon
                 icon={faCircleCheck}
                 className="text-primary-dark text-[18px]"
@@ -70,20 +103,20 @@ export const Member = () => {
         </div>
       </div>
       <div className="mt-[24px] w-[552px]  h-[500px] overflow-scroll">
-        {addresses.map((addr: string, idx: number) => (
+        {addresses.map((addr: Address, idx: number) => (
           <div
-            className="border border-white-dark bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] hover:border-primary"
+            className="border border-white-dark bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-8 gap-[8px] items-center mb-[8px] hover:border-primary"
             key={`address-${idx}`}
           >
-            <div className="flex gap-[8px] items-center">
+            <div className="flex gap-[8px] items-center col-span-7">
               <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
-              {addr}
+              <p>{addr?.ens || truncateAddress(addr.address!)}</p>
             </div>
-            <div className="flex justify-end items-center">
+            <div className="flex justify-end items-center w-[32px]">
               <FontAwesomeIcon
                 icon={faTrashCan}
                 className="text-secondary-light cursor-pointer"
-                onClick={() => handleRemove(addr)}
+                onClick={() => handleRemove(addr.address!)}
               />
             </div>
           </div>
