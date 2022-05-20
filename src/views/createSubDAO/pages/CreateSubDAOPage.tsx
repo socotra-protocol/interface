@@ -1,6 +1,6 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { PrimaryButton, SecondaryButton } from "../../../components/Button"
 import { Tabs, Tab } from "../../../components/Tabs"
 import { CREATE_SUB_DAO_STEP } from "../../../constants/createSubDAO"
@@ -11,14 +11,22 @@ import { Information } from "../Information"
 import { Member } from "../Member"
 import { TokenSetting } from "../TokenSetting"
 import { SelectERC20 } from "../SelectERC20"
+import { TokenType } from "../../../hooks/useCovalent"
 
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
+  const [data, setData] = useState<any>(null)
+
+  const handleERC20 = (data: { token: TokenType; amount: string }) => {
+    setData(data)
+  }
+
+  console.log(data)
 
   const content = useMemo(() => {
     switch (value) {
       case CREATE_SUB_DAO_STEP.SELECT_ERC20:
-        return <SelectERC20 onChange={() => {}} />
+        return <SelectERC20 onChange={handleERC20} />
       case CREATE_SUB_DAO_STEP.INFORMATION:
         return <Information />
       case CREATE_SUB_DAO_STEP.MEMBER:
