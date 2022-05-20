@@ -5,14 +5,15 @@ import { AllocateType } from "./TokenSetting"
 
 type Props = {
   data: DataType
+  isCompleted?: boolean
 }
 export const Complete = (props: Props) => {
-  const { data } = props
+  const { data, isCompleted } = props
   return (
     <>
       <div className="flex justify-center flex-col items-center">
         <div className="text-secondary-dark text-[24px] font-medium mb-[40px]">
-          Confirm your result
+          {isCompleted ? "Completed" : "Confirm your result"}
         </div>
         <div className="grid grid-cols-4 gap-[16px]">
           <div className="flex justify-end col-start-2 relative">
