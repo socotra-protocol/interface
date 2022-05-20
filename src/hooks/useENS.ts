@@ -1,6 +1,7 @@
 import { ethers } from "ethers"
+const provider = ethers.getDefaultProvider("homestead")
+
 export const useENS = () => {
-  const provider = ethers.getDefaultProvider("homestead")
   const isValidAddress = (address: string) => {
     try {
       // getAdress methods trow an error when the passed address is incorrect

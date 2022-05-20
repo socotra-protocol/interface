@@ -1,20 +1,28 @@
-import pinataSDK, { PinataClient } from "@pinata/sdk"
-import { Readable } from "stream"
+import axios from "axios"
 
-const client = pinataSDK(
-  process.env.REACT_APP_PINATA_KEY!,
-  process.env.REACT_APP_PINATA_SECRET!
-)
 export const usePinata = () => {
   const upload = async (file: any) => {
-    const stream = Readable.from(file.buffer)
+    const API_KEY = process.env.REACT_APP_PINATA_KEY
+    const API_SECRET = process.env.REACT_APP_PINATA_SECRET
 
-    // * Needed to prevent error
-    // * ref: https://github.com/PinataCloud/Pinata-SDK/issues/28#issuecomment-816439078
-    // stream["path"] = file.originalname
+    // initialize the form data
+    const formData: any = new FormData()
 
-    const pinResponse = await client.pinFileToIPFS(stream, {})
-    return pinResponse.IpfsHash
+    // append the file form data to
+    formData.append("file", file)
+    // the endpoint needed to upload the file
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`
+
+    const response = await axios.post(url, formData, {
+      maxContentLength: 999999,
+      headers: {
+        "Content-Type": `multipart/form-data;boundary=${formData._boundary}`,
+        pinata_api_key: API_KEY!,
+        pinata_secret_api_key: API_SECRET!,
+      },
+    })
+    return response.data.IpfsHash
   }
+
   return { upload }
 }

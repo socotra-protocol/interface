@@ -14,6 +14,10 @@ import { SelectERC20 } from "../SelectERC20"
 import { TokenType } from "../../../hooks/useCovalent"
 import { AllocateType } from "../TokenSetting"
 import { Modal } from "../../../components/Modal"
+import { usePinata } from "../../../hooks/usePinata"
+import { useSocotraFactory } from "../../../hooks/contracts/useSocotraFactory"
+import { useWeb3React } from "@web3-react/core"
+import { parseFixed } from "@ethersproject/bignumber"
 export type DataType = {
   token: TokenType
   amount: string
@@ -26,7 +30,9 @@ export type DataType = {
 }
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
+  const { splitBranch } = useSocotraFactory()
   const [data, setData] = useState<any>(null)
+  const { upload } = usePinata()
 
   const handleERC20 = (data: { token: TokenType; amount: string }) => {
     setData(data)
@@ -48,8 +54,15 @@ export const CreateSubDAOPage = () => {
     setData({ ...data, ...allocate })
   }
 
-  const onSubmit = () => {}
-  console.log(data)
+  const onSubmit = async () => {
+    const ipfs = await handleUploadIPFS()
+    // await test(ipfs)
+  }
+
+  const handleUploadIPFS = async () => {
+    const ipfs = await upload(data.file)
+    return ipfs
+  }
 
   const content = useMemo(() => {
     switch (value) {
@@ -110,6 +123,12 @@ export const CreateSubDAOPage = () => {
           </div>
         </div>
       </Layout>
+      <Modal visible={false}>
+        <div className="bg-white-light h-[90px] w-[300px] rounded-[16px] p-4 border border-white-dark flex items-center justify-center gap-[8px]">
+          <img alt="" src="/assets/loading.svg" className="h-[32px] w-[32px]" />
+          <div className="text-[16px text-secondary">text</div>
+        </div>
+      </Modal>
     </>
   )
 }
