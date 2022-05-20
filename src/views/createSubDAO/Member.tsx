@@ -49,7 +49,7 @@ export const Member = (props: Props) => {
       setAddress(null)
       setInputText(null)
       setCorrect(false)
-      onChange({ member: [address, ...newAddresses] })
+      onChange([address, ...newAddresses])
     }
   }
 

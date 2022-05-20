@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core"
 import { useEffect, useState } from "react"
 import { SelectToken } from "../../components/SelectToken"
-import { useCovalent } from "../../hooks/useCovalent"
+import { TokenType, useCovalent } from "../../hooks/useCovalent"
 
 //must add type
 type Props = {
@@ -11,13 +11,7 @@ export const SelectERC20 = (props: Props) => {
   const { account, active } = useWeb3React()
   const { balances } = useCovalent()
   const { onChange } = props
-  const [token, setToken] = useState<{
-    balance: string
-    symbol: string
-    name: string
-    logo: string
-    address: string
-  } | null>(null)
+  const [token, setToken] = useState<TokenType | null>(null)
 
   const [tokenList, setTokenList] = useState([])
   const [amount, setAmount] = useState(null)

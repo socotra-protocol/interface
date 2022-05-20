@@ -1,49 +1,100 @@
 import { faTrashCan } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useWeb3React } from "@web3-react/core"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { SecondaryButton } from "../../components/Button"
 import { Card } from "../../components/Card"
 import { LabelInput } from "../../components/Input"
 import { MemberCard, ProfileMemberCard } from "../../components/MemberCard"
 import { MemberInput } from "../../components/MemberInput"
 import { Address } from "./Member"
+import { DataType } from "./pages/CreateSubDAOPage"
 
-type AllocateType = {
+export type AllocateType = {
   ens?: string
   address: string
   subDAOamount: string
   mainDAOamount: string
 }
 type Props = {
-  data: any
+  data: DataType
   onChange: (data: any) => void
 }
 export const TokenSetting = (props: Props) => {
   const { data, onChange } = props
   const { account } = useWeb3React()
   const [subDAOtokenName, setSubDAOtokenName] = useState("")
-  const [subDAOtokenAmount, setSubDAOtokenAmout] = useState("")
-
+  const [subDAOtokenAmountInit, setSubDAOtokenAmoutInit] = useState<
+    string | null
+  >(null)
+  const [subDAOtokenAmount, setSubDAOtokenAmount] = useState("")
+  const [mainDAOtokenAmount, setMainDAOtokenAmount] = useState("")
   const [allocateList, setAllocateList] = useState<AllocateType[]>([])
 
   useEffect(() => {
     setAllocateList([
       { ens: "ME", address: account!, subDAOamount: "", mainDAOamount: "" },
-      ...data?.member.map((member: Address) => {
+      ...data?.member!.map((member: Address) => {
         return {
-          ...member,
+          ens: member?.ens,
+          address: member.address!,
           subDAOamount: "",
           mainDAOamount: "",
         }
       }),
     ])
-  }, [data?.member])
+  }, [])
+
+  useEffect(() => {
+    calcSubDAOAmount(allocateList)
+  }, [subDAOtokenAmountInit])
 
   const handleRemove = (address: string) => {
     const newAddresses = allocateList
     setAllocateList(newAddresses.filter((addr) => addr.address !== address))
   }
+
+  const calcSubDAOAmount = (allocate?: AllocateType[]) => {
+    if (!Boolean(subDAOtokenAmountInit)) {
+      return setSubDAOtokenAmount("---")
+    }
+
+    if (allocate) {
+      const total = allocate.reduce(
+        (acc, all) => Number(all.subDAOamount) + acc,
+        0
+      )
+
+      setSubDAOtokenAmount((Number(subDAOtokenAmountInit) - total).toString())
+    }
+  }
+
+  const calcMainDAOAmount = (allocate?: AllocateType[]) => {
+    if (allocate) {
+      const total = allocate.reduce(
+        (acc, all) => Number(all.mainDAOamount) + acc,
+        0
+      )
+
+      setMainDAOtokenAmount((Number(data.amount) - total).toString())
+    }
+  }
+
+  const handleAllocate = (
+    address: string,
+    amount: { subDAOamount: string; mainDAOamount: string }
+  ) => {
+    const newAllocateList = allocateList
+    const idx = newAllocateList.findIndex((item) => item.address === address)
+    newAllocateList[idx] = { ...newAllocateList[idx], ...amount }
+    setAllocateList(newAllocateList)
+    onChange(newAllocateList)
+
+    //must move
+    calcSubDAOAmount(newAllocateList)
+    calcMainDAOAmount(newAllocateList)
+  }
+
   return (
     <div className="flex items-center mx-auto max-w-7xl">
       <div className="grid grid-cols-subdao gap-[16px]">
@@ -59,7 +110,9 @@ export const TokenSetting = (props: Props) => {
           <LabelInput
             label="SubDAO token amount"
             className="mb-[8px]"
-            onChange={(e) => setSubDAOtokenAmout(e.target.value)}
+            onChange={(e) => {
+              setSubDAOtokenAmoutInit(e.target.value)
+            }}
           />
           <div>
             <Card label="Contract">
@@ -73,10 +126,7 @@ export const TokenSetting = (props: Props) => {
                     SubDAO token
                   </div>
                   <div className="text-secondary-dark text-[16px] font-medium">
-                    {subDAOtokenAmount || "---"}{" "}
-                    {subDAOtokenName
-                      ? subDAOtokenName + data.token.symbol
-                      : "---"}
+                    {subDAOtokenAmount || "---"} {subDAOtokenName || "---"}
                   </div>
                 </div>
                 <div>
@@ -84,7 +134,7 @@ export const TokenSetting = (props: Props) => {
                     MainDAO token
                   </div>
                   <div className="text-secondary-light text-[16px] font-medium">
-                    {data.amount} {data.token.symbol}
+                    {mainDAOtokenAmount} {data.token.symbol}
                   </div>
                 </div>
               </div>
@@ -100,12 +150,13 @@ export const TokenSetting = (props: Props) => {
               <MemberInput
                 wallet={{ ens: member?.ens, address: member.address }}
                 labels={["SubDAO token amount", "MainDAO token amount"]}
+                onChange={(data) => handleAllocate(member.address, data)}
                 action={
                   idx === 0 ? undefined : (
                     <FontAwesomeIcon
                       icon={faTrashCan}
                       className="text-secondary-light cursor-pointer"
-                      onClick={()=>handleRemove(member.address)}
+                      onClick={() => handleRemove(member.address)}
                     />
                   )
                 }

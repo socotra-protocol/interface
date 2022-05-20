@@ -12,7 +12,15 @@ import { Address, Member } from "../Member"
 import { TokenSetting } from "../TokenSetting"
 import { SelectERC20 } from "../SelectERC20"
 import { TokenType } from "../../../hooks/useCovalent"
-
+import { AllocateType } from "../TokenSetting"
+export type DataType = {
+  token: TokenType
+  amount: string
+  subDAOname?: string
+  file?: File 
+  member?: { address: string; ens?: string }[]
+  allocate?: AllocateType[]
+}
 export const CreateSubDAOPage = () => {
   const { onNext, onPrev, value } = useCreateSubDAOStep()
   const [data, setData] = useState<any>(null)
@@ -26,13 +34,13 @@ export const CreateSubDAOPage = () => {
   }
 
   const handleMember = (member: Address[]) => {
-    setData({ ...data, ...member })
+    setData({ ...data, member })
   }
 
   const handleTokenSetting = (
-    member: Address[] & { mainDAOtoken: string; subDAOtoken: string }
+    allocate: Address[] & { mainDAOamount: string; subDAOamount: string }
   ) => {
-    setData({ ...data, ...member })
+    setData({ ...data, allocate })
   }
 
   console.log(data)
