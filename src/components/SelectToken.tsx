@@ -20,7 +20,7 @@ const Token = (props: TokenProps) => {
     >
       <div className="flex items-center gap-[8px]">
         <div>
-          <img alt="" src={logo} className="h-[32px] w-[32px] rounded-full" />
+          <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
         </div>
         <div>
           <div className="text-[12px] font-medium text-secondary-dark">
@@ -65,11 +65,7 @@ const SelectedToken = (props: SelectedTokenProps) => {
       <div className="w-[454px] cursor-pointer border  bg-white-light px-[16px] py-[16px] rounded-[8px] grid grid-cols-2 gap-[8px] items-center mb-[8px] border-primary">
         <div className="flex items-center gap-[8px]">
           <div>
-            <img
-              alt=""
-              src={value.logo}
-              className="h-[32px] w-[32px] rounded-full"
-            />
+            <div className="h-[32px] w-[32px] bg-primary-light rounded-full text-secondary-dark" />
           </div>
           <div>
             <div className="text-[12px] font-medium text-secondary-dark">

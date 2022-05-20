@@ -29,6 +29,12 @@ export const CreateSubDAOPage = () => {
     setData({ ...data, ...member })
   }
 
+  const handleTokenSetting = (
+    member: Address[] & { mainDAOtoken: string; subDAOtoken: string }
+  ) => {
+    setData({ ...data, ...member })
+  }
+
   console.log(data)
 
   const content = useMemo(() => {
@@ -40,7 +46,7 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.MEMBER:
         return <Member onChange={handleMember} />
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
-        return <TokenSetting />
+        return <TokenSetting data={data} onChange={handleTokenSetting} />
       case CREATE_SUB_DAO_STEP.COMPLETE:
         return <Complete />
     }
