@@ -19,7 +19,7 @@ export const Complete = (props: Props) => {
         <div className="flex justify-end col-start-2 relative">
           <img
             alt=""
-            className="h-[143px] w-full object-cover rounded-[16px]"
+            className="h-[164px] w-full object-cover rounded-[16px]"
             src={
               data?.file
                 ? window.URL.createObjectURL(data?.file)
@@ -31,6 +31,7 @@ export const Complete = (props: Props) => {
           </div>
         </div>
         <div>
+          <div className="text-secondary-dark ">Token Details</div>
           <SelectToken
             value={{
               ...data?.token,
