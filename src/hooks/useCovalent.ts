@@ -1,5 +1,7 @@
 import axios from "axios"
 import { formatFixed } from "@ethersproject/bignumber"
+import { useWeb3React } from "@web3-react/core"
+import { useTokenList } from "./useTokenList"
 
 export type TokenType = {
   balance: string
@@ -7,13 +9,17 @@ export type TokenType = {
   name: string
   logo: string
   address: string
-  decimals?: string;
+  decimals?: string
 }
 
 const key = process.env.REACT_APP_COVALENTHQ_KEY
 export const useCovalent = () => {
-    
+  const { chainId } = useWeb3React()
+  const { getTokens } = useTokenList()
+
   const balances = async (address: string) => {
+    if (chainId !== 1) return await getTokens()
+
     const url = `https://api.covalenthq.com/v1/1/address/${address}/balances_v2/`
     const params = {
       "quote-currency": "USD",
