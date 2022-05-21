@@ -18,6 +18,7 @@ import { Payout } from "../Payout"
 import { PayoutButton } from "../PayoutButton"
 import { Proposal } from "../Proposal"
 import { ProposalBuild } from "../ProposalBuild"
+import { ProposalMember } from "../ProposalMember"
 
 export const DashboardDetailPage = () => {
   const { id: managerAddr } = useParams()
@@ -86,7 +87,7 @@ export const DashboardDetailPage = () => {
             isOwner ? (
               <Proposal spaceName={spaceName} subDAOInfo={subDAO} />
             ) : (
-              <></>
+              <ProposalMember />
             )
           ) : isOwner ? (
             <ProposalBuild subDAOInfo={subDAO} />
