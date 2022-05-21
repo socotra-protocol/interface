@@ -14,12 +14,12 @@ import { usePinata } from "../../hooks/usePinata"
 type Props = {
   subDAO: BranchInfo | null
 }
-export const RequestFundsButton = (props: Props) => {
+export const PayoutButton = (props: Props) => {
   const { id: managerAddr } = useParams()
   const { account } = useWeb3React()
 
   const { subDAO } = props
-  const { requestPayout } = useSocotraBranchManager()
+  const { requestPayout, issuePayout } = useSocotraBranchManager()
 
   const [visible, setVisible] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -29,7 +29,7 @@ export const RequestFundsButton = (props: Props) => {
   const [amount, setAmount] = useState<string>("")
   const { upload, json } = usePinata()
 
-  const handleRequestPayout = async () => {
+  const handlePayout = async () => {
     try {
       setMsgModal("Uploading data to IPFS")
       setIsLoading(true)
@@ -41,7 +41,6 @@ export const RequestFundsButton = (props: Props) => {
       setIsLoading(false)
       setVisible(false)
     } catch (error) {
-      console.error(error)
       setIsLoading(false)
       setVisible(false)
     }
@@ -53,14 +52,14 @@ export const RequestFundsButton = (props: Props) => {
 
   return (
     <>
-      <PrimaryButton dark onClick={() => setVisible(true)}>
-        Request Funds
-      </PrimaryButton>
+      <SecondaryButton outlined dark onClick={() => setVisible(true)}>
+        Payout
+      </SecondaryButton>
       <Modal visible={visible}>
         <div className="w-[560px] h-[768px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
           <div>
             <div className="text-[36px] text-secondary-dark font-medium text-center mb-[16px]">
-              Request Funds
+              Payout
             </div>
             <div className="h-[68px] mb-[8px]">
               <LabelInput
@@ -92,8 +91,8 @@ export const RequestFundsButton = (props: Props) => {
             >
               Cancel
             </SecondaryButton>
-            <PrimaryButton dark onClick={handleRequestPayout}>
-              Send
+            <PrimaryButton dark onClick={handlePayout}>
+              Payout
             </PrimaryButton>
           </div>
         </div>

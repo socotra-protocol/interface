@@ -104,7 +104,7 @@ export const useSocotraBranchManager = () => {
     if (!active || !chainId) return null
 
     const contract = await getContract(managerAddr)
-    console.log('managerAddr',managerAddr)
+    console.log("managerAddr", managerAddr)
     if (contract) {
       return await contract.branchInfo()
     }
@@ -125,12 +125,32 @@ export const useSocotraBranchManager = () => {
     if (contract) {
       const inBytes = ethers.utils.formatBytes32String(proof)
 
-      return await contract.requestPayout(
+      const tx = await contract.requestPayout(
         parseFixed(amount, decimal).toString(),
         receiver,
         inBytes,
         { gasLimit: 42000 }
       )
+      await tx.wait()
+      const provider = new ethers.providers.Web3Provider(library.provider)
+      const transaction = await provider.getTransactionReceipt(tx.hash)
+      console.log(transaction)
+      return "1"
+      //   let addr = null
+      //   for (const log of tx.logs) {
+      //     if (
+      //       JSON.stringify(log.topics) ===
+      //         JSON.stringify([
+      //           "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0",
+      //           "0x0000000000000000000000000000000000000000000000000000000000000000",
+      //           "0x0000000000000000000000004c1e632c58a1e069099aa3f61b913776ba4f32f1",
+      //         ]) &&
+      //       log.data == "0x"
+      //     ) {
+      //       addr = log.address
+      //     }
+      //   }
+      //   return addr
     }
     return null
   }
@@ -161,6 +181,18 @@ export const useSocotraBranchManager = () => {
       console.log("tx", tx)
     }
   }
+
+  const issuePayout = async (managerAddr: string, payoutId: string) => {
+    if (!active || !chainId) return null
+
+    const contract = await getContract(managerAddr)
+
+    if (contract) {
+      const tx = await contract.issuePayout(payoutId)
+      await tx.wait()
+      console.log("tx", tx)
+    }
+  }
   return {
     addMemberAllocation,
     addBatchAllocation,
@@ -169,5 +201,6 @@ export const useSocotraBranchManager = () => {
     requestPayout,
     delegateSpace,
     registerSnapshotVoteProxy,
+    issuePayout,
   }
 }

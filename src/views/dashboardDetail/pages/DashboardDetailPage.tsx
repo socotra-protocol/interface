@@ -16,6 +16,7 @@ import { TokenType } from "../../../hooks/useCovalent"
 import { useSnapshot } from "../../../hooks/useSnapshot"
 import { MembershipsCard } from "../MembershipsCard"
 import { Payout } from "../Payout"
+import { PayoutButton } from "../PayoutButton"
 
 export const DashboardDetailPage = () => {
   const { id: managerAddr } = useParams()
@@ -108,13 +109,7 @@ export const DashboardDetailPage = () => {
                   address={""}
                   subDAOAmount={"1"}
                   mainDAOAmount={"1"}
-                  action={
-                    isOwner && (
-                      <SecondaryButton outlined dark>
-                        Payout
-                      </SecondaryButton>
-                    )
-                  }
+                  action={isOwner && <PayoutButton subDAO={subDAO} />}
                   labels={["Vote token", "Rewards token"]}
                 />
               ))}
