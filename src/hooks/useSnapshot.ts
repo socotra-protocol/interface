@@ -1,9 +1,19 @@
 import snapshot from "@snapshot-labs/snapshot.js"
 import { useWeb3React } from "@web3-react/core"
+import { ethers } from "ethers"
+import axios from "axios"
 
 const hub = "https://hub.snapshot.org" // or https://testnet.snapshot.org for testnet
 const client = new snapshot.Client712(hub)
 
+export type CreateProposalType = {
+  id: string
+  ipfs: string
+  relayer: {
+    address: string
+    receipt: string
+  }
+}
 export const useSnapshot = () => {
   const { library, account } = useWeb3React()
 
@@ -13,7 +23,9 @@ export const useSnapshot = () => {
     choice: number,
     type = "single-choice"
   ) => {
-    const receipt = await client.vote(library.provider, account!, {
+    const provider = new ethers.providers.Web3Provider(library.provider)
+
+    const receipt = await client.vote(provider, account!, {
       space,
       proposal,
       type,
@@ -21,6 +33,7 @@ export const useSnapshot = () => {
       metadata: JSON.stringify({}),
     })
     console.log(receipt)
+    return receipt
   }
 
   const createProposal = async (
@@ -34,8 +47,9 @@ export const useSnapshot = () => {
     snapshot: number,
     network: string,
     strategies = JSON.stringify({})
-  ) => {
-    const receipt = await client.proposal(library.provider, account!, {
+  ): Promise<CreateProposalType> => {
+    const provider = new ethers.providers.Web3Provider(library.provider)
+    console.log({
       space,
       type,
       title,
@@ -46,11 +60,68 @@ export const useSnapshot = () => {
       snapshot,
       network,
       strategies,
+      discussion: "",
+      plugins: JSON.stringify({}),
+      metadata: JSON.stringify({}),
+    })
+    const receipt = await client.proposal(provider, account!, {
+      space,
+      type,
+      title,
+      body,
+      choices,
+      start,
+      end,
+      snapshot,
+      network,
+      strategies,
+      discussion: "",
       plugins: JSON.stringify({}),
       metadata: JSON.stringify({}),
     } as any)
     console.log(receipt)
+    return receipt as CreateProposalType
   }
 
-  return { vote, createProposal }
+  const getSpace = async (spaceName: string) => {
+    const url = "https://hub.snapshot.org/graphql"
+    const data = {
+      operationName: "Spaces",
+      variables: {
+        id_in: [spaceName, null],
+      },
+      query:
+        "query Spaces($id_in: [String]) {\n  spaces(where: {id_in: $id_in}) {\n    id\n    name\n    about\n    network\n    symbol\n    network\n    terms\n    skin\n    avatar\n    twitter\n    website\n    github\n    private\n    domain\n    members\n    admins\n    categories\n    plugins\n    followersCount\n    voting {\n      delay\n      period\n      type\n      quorum\n      hideAbstain\n    }\n    strategies {\n      name\n      network\n      params\n    }\n    validation {\n      name\n      params\n    }\n    filters {\n      minScore\n      onlyMembers\n    }\n  }\n}",
+    }
+    const res = await axios.post(url, data)
+    const space = res.data.data.spaces[0]
+    return space
+  }
+
+  const getProposal = async (proposalId: string) => {
+    const url = "https://hub.snapshot.org/graphql"
+    const data = {
+      operationName: "Proposal",
+      variables: {
+        id: proposalId,
+      },
+      query:
+        "query Proposal($id: String!) {\n  proposal(id: $id) {\n    id\n    ipfs\n    title\n    body\n    discussion\n    choices\n    start\n    end\n    snapshot\n    state\n    author\n    created\n    plugins\n    network\n    type\n    quorum\n    symbol\n    strategies {\n      name\n      network\n      params\n    }\n    space {\n      id\n      name\n    }\n    scores_state\n    scores\n    scores_by_strategy\n    scores_total\n    votes\n  }\n}",
+    }
+    const res = await axios.post(url, data)
+    const proposal = res.data.data.proposal
+    return proposal
+  }
+
+  const space = async (name: string, settings: any) => {
+    const provider = new ethers.providers.Web3Provider(library.provider)
+
+    const receipt = await client.space(provider, account!, {
+      space: name,
+      settings: JSON.stringify(settings),
+    })
+    console.log(receipt)
+    return receipt
+  }
+  return { vote, createProposal, space, getSpace, getProposal }
 }

@@ -42,6 +42,19 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "socotraBranchManagerImplementation",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",

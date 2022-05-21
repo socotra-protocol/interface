@@ -2,13 +2,16 @@ import { parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import SocotraBranchManagerABI from "../../abis/SocotraBranchManager.json"
-import { string2Bin } from "../../utils/string"
+import { string2Bin, stringToUTF8Bytes } from "../../utils/string"
+import { TokenType } from "../useCovalent"
 
 export type BranchInfo = {
-  imageUrl: string
-  name: string
-  parentTokenAddress: string
-  voteTokenAddress: string
+  imageUrl?: string
+  name?: string
+  parentTokenAddress?: string
+  voteTokenAddress?: string
+  mainDAOToken?: TokenType
+  subDAOToken?: TokenType
 }
 
 export const useSocotraBranchManager = () => {
@@ -101,7 +104,7 @@ export const useSocotraBranchManager = () => {
     if (!active || !chainId) return null
 
     const contract = await getContract(managerAddr)
-
+    console.log('managerAddr',managerAddr)
     if (contract) {
       return await contract.branchInfo()
     }
@@ -120,14 +123,43 @@ export const useSocotraBranchManager = () => {
     const contract = await getContract(managerAddr)
 
     if (contract) {
+      const inBytes = ethers.utils.formatBytes32String(proof)
+
       return await contract.requestPayout(
         parseFixed(amount, decimal).toString(),
         receiver,
-        string2Bin(proof),
-        { gasLimit: 41000 }
+        inBytes,
+        { gasLimit: 42000 }
       )
     }
     return null
+  }
+
+  const delegateSpace = async (managerAddr: string, spaceId: string) => {
+    if (!active || !chainId) return null
+
+    const contract = await getContract(managerAddr)
+
+    if (contract) {
+      const inBytes = ethers.utils.formatBytes32String(spaceId)
+      console.log(inBytes)
+      const tx = await contract.delegateSpace(inBytes, {
+        gasLimit: 42000,
+      })
+      await tx.wait()
+    }
+  }
+
+  const registerSnapshotVoteProxy = async (managerAddr: string) => {
+    if (!active || !chainId) return null
+
+    const contract = await getContract(managerAddr)
+
+    if (contract) {
+      const tx = await contract.registerSnapshotVoteProxy()
+      await tx.wait()
+      console.log("tx", tx)
+    }
   }
   return {
     addMemberAllocation,
@@ -135,5 +167,7 @@ export const useSocotraBranchManager = () => {
     memberClaimToken,
     branchInfo,
     requestPayout,
+    delegateSpace,
+    registerSnapshotVoteProxy,
   }
 }

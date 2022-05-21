@@ -2,6 +2,7 @@ import { formatFixed, parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import ERC20ABI from "../../abis/ERC20abi.json"
+import { TokenType } from "../useCovalent"
 
 export const useERC20 = () => {
   const { library, active, chainId, account } = useWeb3React()
@@ -61,16 +62,7 @@ export const useERC20 = () => {
     }
   }
 
-  const tokenInfo = async (
-    erc20Address: string
-  ): Promise<{
-    symbol: string
-    balance: string
-    name: string
-    decimals: string
-    address: string
-    logo: string
-  }> => {
+  const tokenInfo = async (erc20Address: string): Promise<TokenType> => {
     const _symbol = await symbol(erc20Address)
     const _balance = await balanceOf(erc20Address)
     const _name = await name(erc20Address)

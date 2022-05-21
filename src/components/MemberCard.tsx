@@ -47,9 +47,11 @@ export const ProfileMemberCard = ({
 
 type Props = {
   size?: "small" | "large"
+  wallet?: { ens?: string; address: string }
+  copy?: boolean
 }
 export const MemberCard = (props: Props) => {
-  const { size } = props
+  const { size, wallet, copy } = props
 
   const padding = useMemo(() => {
     if (!size) return "p-[24px]"
@@ -59,7 +61,7 @@ export const MemberCard = (props: Props) => {
     <div
       className={`border border-white-dark ${padding}  flex gap-[16px] items-center rounded-[16px]`}
     >
-      <ProfileMemberCard />
+      <ProfileMemberCard wallet={wallet} copy={copy} />
     </div>
   )
 }

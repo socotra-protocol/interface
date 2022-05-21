@@ -19,6 +19,7 @@ import { useSocotraFactory } from "../../../hooks/contracts/useSocotraFactory"
 import { useSocotraBranchManager } from "../../../hooks/contracts/useSocotraBranchManager"
 import { wordingCreate } from "../../../constants/wording"
 import { useNavigate } from "react-router"
+import { useWeb3React } from "@web3-react/core"
 export type DataType = {
   token?: TokenType
   amount?: string
@@ -30,12 +31,15 @@ export type DataType = {
   subDAOTokenAmount?: string
 }
 export const CreateSubDAOPage = () => {
+  const { account } = useWeb3React()
   const { onNext, onPrev, value } = useCreateSubDAOStep()
   const { splitBranch } = useSocotraFactory()
-  const { addBatchAllocation, branchInfo } = useSocotraBranchManager()
+  const { addBatchAllocation, branchInfo, delegateSpace } =
+    useSocotraBranchManager()
   const { upload } = usePinata()
   const navigate = useNavigate()
 
+  // 0xdDc9371da9C6216F0c3c4eA93eB93b3022Bb8c39
   const [data, setData] = useState<DataType | null>(null)
   const [loadingStep, setLoadingStep] = useState<number>(0)
   const [visible, setVisible] = useState<boolean>(false)
@@ -100,6 +104,12 @@ export const CreateSubDAOPage = () => {
     setLoadingStep(4)
 
     const branch = await branchInfo(managerAddr!)
+    // 0xd27f64E1F519070946C8896426ED2c5Cc7FccB11
+
+    // await delegateSpace(managerAddr!, "zunnoon.eth")
+
+
+
     //send api
 
     //
@@ -123,7 +133,7 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
         return <TokenSetting data={data!} onChange={handleTokenSetting} />
       case CREATE_SUB_DAO_STEP.COMPLETE:
-        return <Complete data={data!} isCompleted={isCompleted} />
+        return <Complete data={data!} isCompleted={isCompleted} label={isCompleted ? 'Completed':'Confirm your result'} />
     }
   }, [value])
 

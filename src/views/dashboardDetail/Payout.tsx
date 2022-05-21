@@ -1,38 +1,40 @@
 import { useWeb3React } from "@web3-react/core"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { PrimaryButton, SecondaryButton } from "../../components/Button"
 import { Card } from "../../components/Card"
 import { MemberCard } from "../../components/MemberCard"
 import { Modal } from "../../components/Modal"
-import { useSocotraBranchManager } from "../../hooks/contracts/useSocotraBranchManager"
+import {
+  BranchInfo,
+  useSocotraBranchManager,
+} from "../../hooks/contracts/useSocotraBranchManager"
+import { useENS } from "../../hooks/useENS"
+import { ClaimSubDAOTokenButton } from "./ClaimSubDAOTokenButton"
+import { RequestFundsButton } from "./RequestFundsButton"
 
-export const Payout = () => {
+type Props = {
+  subDAO: BranchInfo | null
+}
+export const Payout = (props: Props) => {
+  const { subDAO } = props
   const { account } = useWeb3React()
   const { id: managerAddr } = useParams()
+  const { requestPayout, memberClaimToken } = useSocotraBranchManager()
+  const { getENSName, isENSName } = useENS()
+
   const [visible, setVisible] = useState<boolean>(false)
   const [msgModal, setMsgModal] = useState<string>("")
+  const [ensName, setENSName] = useState<string | undefined>(undefined)
 
-  const { requestPayout, memberClaimToken } = useSocotraBranchManager()
+  useEffect(() => {
+    fetchENS()
+  }, [])
 
-  const handleRequestPayout = async () => {
-    try {
-      setMsgModal("Waiting for transactions approval 1 of 1")
-      setVisible(true)
-      await requestPayout(managerAddr!, "10", account!, "")
-      setVisible(false)
-    } catch (error) {
-      setVisible(false)
-    }
-  }
-  const handleMemberClaimToken = async () => {
-    try {
-      setMsgModal("Waiting for transactions approval 1 of 1")
-      setVisible(true)
-      await memberClaimToken(managerAddr!, "10")
-      setVisible(false)
-    } catch (error) {
-      setVisible(false)
+  const fetchENS = async () => {
+    const ensName = await getENSName(account!)
+    if (isENSName(ensName)) {
+      setENSName(ensName)
     }
   }
 
@@ -42,19 +44,16 @@ export const Payout = () => {
         <Card label="Member">
           <div className="p-[32px]">
             <div className="flex justify-between">
-              <MemberCard size="small" />
+              <MemberCard
+                size="small"
+                wallet={{ address: account!, ens: ensName }}
+              />
               <div>
-                <SecondaryButton
-                  outlined
-                  light
-                  className="mr-[8px]"
-                  onClick={handleMemberClaimToken}
-                >
-                  Claim SubDAO token
-                </SecondaryButton>
-                <PrimaryButton dark onClick={handleRequestPayout}>
+                <ClaimSubDAOTokenButton subDAO={subDAO} />
+                <RequestFundsButton subDAO={subDAO} />
+                {/* <PrimaryButton dark onClick={handleRequestPayout}>
                   Request Funds
-                </PrimaryButton>
+                </PrimaryButton> */}
               </div>
             </div>
           </div>
@@ -62,7 +61,7 @@ export const Payout = () => {
           <div className="p-[32px] grid grid-cols-2 w-[500px] ">
             <div>
               <div className="text-secondary text-[16px] font-medium">
-                Voting token
+                SubDAO Token
               </div>
               <div className="text-secondary-dark text-[16px] font-medium">
                 3000 dCRV
@@ -70,7 +69,7 @@ export const Payout = () => {
             </div>
             <div>
               <div className="text-secondary text-[16px] font-medium">
-                Rewards token
+                MainDAO Token
               </div>
               <div className="text-secondary-light text-[16px] font-medium">
                 4000 CRV

@@ -6,14 +6,15 @@ import { AllocateType } from "./TokenSetting"
 type Props = {
   data: DataType
   isCompleted?: boolean
+  label: string
 }
 export const Complete = (props: Props) => {
-  const { data, isCompleted } = props
+  const { data, isCompleted, label } = props
   return (
     <>
       <div className="flex justify-center flex-col items-center">
         <div className="text-secondary-dark text-[24px] font-medium mb-[40px]">
-          {isCompleted ? "Completed" : "Confirm your result"}
+          {label}
         </div>
         <div className="grid grid-cols-4 gap-[16px]">
           <div className="flex justify-end col-start-2 relative">
@@ -37,6 +38,7 @@ export const Complete = (props: Props) => {
                 ...data?.token,
                 symbol: "MainDAO Token",
                 name: data?.token?.symbol,
+                balance: data?.amount,
               }}
               onSelectToken={() => {}}
               onChange={() => {}}
@@ -59,14 +61,14 @@ export const Complete = (props: Props) => {
               Members
             </div>
             <div className="text-secondary text-[16px]">
-              {data.member?.length} People
+              {data?.allocate?.length} People
             </div>
           </div>
           <div className="h-[350px] overflow-scroll row-start-3 col-span-2 col-start-2">
             <div className="grid gap-[8px] ">
               {data?.allocate
-                ?.slice(1)
-                .map((allocate: AllocateType, idx: number) => (
+                // ?.slice(1)
+                ?.map((allocate: AllocateType, idx: number) => (
                   <MembershipsCard
                     ens={allocate?.ens}
                     address={allocate?.address}

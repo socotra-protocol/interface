@@ -24,5 +24,19 @@ export const usePinata = () => {
     return response.data.IpfsHash
   }
 
-  return { upload }
+  const json = async (data: any) => {
+    const API_KEY = process.env.REACT_APP_PINATA_KEY
+    const API_SECRET = process.env.REACT_APP_PINATA_SECRET
+
+    const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`
+    const response = await axios.post(url, data, {
+      maxContentLength: 999999,
+      headers: {
+        pinata_api_key: API_KEY!,
+        pinata_secret_api_key: API_SECRET!,
+      },
+    })
+    return response.data.IpfsHash
+  }
+  return { upload, json }
 }

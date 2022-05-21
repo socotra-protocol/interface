@@ -1,7 +1,8 @@
 import { formatFixed } from "@ethersproject/bignumber"
+import { useWeb3React } from "@web3-react/core"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { SecondaryButton } from "../../../components/Button"
+import { PrimaryButton, SecondaryButton } from "../../../components/Button"
 import { Cover } from "../../../components/Cover"
 import { MemberCard } from "../../../components/MemberCard"
 import { SelectToken } from "../../../components/SelectToken"
@@ -12,31 +13,34 @@ import {
   useSocotraBranchManager,
 } from "../../../hooks/contracts/useSocotraBranchManager"
 import { TokenType } from "../../../hooks/useCovalent"
+import { useSnapshot } from "../../../hooks/useSnapshot"
 import { MembershipsCard } from "../MembershipsCard"
 import { Payout } from "../Payout"
-import { Proposal } from "../Proposal"
 
 export const DashboardDetailPage = () => {
   const { id: managerAddr } = useParams()
   const { branchInfo } = useSocotraBranchManager()
+  const { space, getSpace } = useSnapshot()
   const { tokenInfo } = useERC20()
+  const { account } = useWeb3React()
   const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
-  const [mainDAOToken, setMainToken] = useState<TokenType | null>(null)
-  const [subDAOToken, setSubToken] = useState<TokenType | null>(null)
   const isMember = true
+  const isOwner = true
 
+  //check token
   useEffect(() => {
-    // fetchInfo()
-  }, [])
+    fetchInfo()
+  }, [managerAddr])
 
   const fetchInfo = async () => {
     const info = await branchInfo(managerAddr!)
-    setSubDAO(info)
-
-    const mainDAO = await tokenInfo(info?.parentTokenAddress!)
-    console.log("mainDAO", mainDAO)
-    const subDAO = await tokenInfo(info?.voteTokenAddress!)
-    console.log("subDAO", subDAO)
+    const mainDAOToken: TokenType = await tokenInfo(info?.parentTokenAddress!)
+    const subDAOToken: TokenType = await tokenInfo(info?.voteTokenAddress!)
+    setSubDAO({
+      ...info,
+      mainDAOToken: mainDAOToken!,
+      subDAOToken: subDAOToken!,
+    })
   }
 
   return (
@@ -74,8 +78,13 @@ export const DashboardDetailPage = () => {
           <MemberCard size="small" />
         </div>
         <div className=" bg-white p-[24px]">
-          {isMember && <Payout />}
-          <Proposal />
+          {isMember && <Payout subDAO={subDAO} />}
+          {/* {!isOwner ? (
+            <ProposalSetting subDAOToken={subDAOToken} />
+          ) : (
+            <Proposal />
+          )} */}
+
           <div>
             <div className="flex justify-between items-center mb-[16px]">
               <div className="flex items-center gap-[8px]">
@@ -100,9 +109,11 @@ export const DashboardDetailPage = () => {
                   subDAOAmount={"1"}
                   mainDAOAmount={"1"}
                   action={
-                    <SecondaryButton outlined dark>
-                      Payout
-                    </SecondaryButton>
+                    isOwner && (
+                      <SecondaryButton outlined dark>
+                        Payout
+                      </SecondaryButton>
+                    )
                   }
                   labels={["Vote token", "Rewards token"]}
                 />

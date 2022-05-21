@@ -26,9 +26,11 @@ export const useENS = () => {
     }
   }
   const getENSName = async (address: string) => {
-    return provider.lookupAddress(address).then((resolvedName) => {
-      return resolvedName ?? address
-    })
+    return provider
+      .lookupAddress(address.toLocaleLowerCase())
+      .then((resolvedName) => {
+        return resolvedName ?? address
+      })
   }
 
   const isENSName = (text: string) => {

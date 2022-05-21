@@ -58,17 +58,17 @@ export const TokenSetting = (props: Props) => {
   }
 
   const calcSubDAOAmount = (allocate?: AllocateType[]) => {
-    if (!Boolean(subDAOtokenAmountInit)) {
-      return setSubDAOtokenAmount(null)
-    }
-
     if (allocate) {
       const total = allocate.reduce(
         (acc, all) => Number(all.subDAOAmount) + acc,
         0
       )
+      if (total === 0) {
+        return setSubDAOtokenAmount(null)
+      }
 
-      setSubDAOtokenAmount((Number(subDAOtokenAmountInit) - total).toString())
+      setSubDAOtokenAmount((total).toString())
+      setSubDAOtokenAmoutInit(total.toString())
     }
   }
 
@@ -114,13 +114,13 @@ export const TokenSetting = (props: Props) => {
             className="mb-[8px]"
             onChange={(e) => setSubDAOtokenName(e.target.value)}
           />
-          <LabelInput
+          {/* <LabelInput
             label="SubDAO token amount"
             className="mb-[8px]"
             onChange={(e) => {
               setSubDAOtokenAmoutInit(e.target.value)
             }}
-          />
+          /> */}
           <div>
             <Card label="Contract">
               {/* <div className="p-[32px] flex gap-[16px] items-center">

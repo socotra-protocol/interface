@@ -17,7 +17,7 @@ export const Explore = () => {
               key={`card-${idx}`}
               onClick={() =>
                 navigate(
-                  "/dashboard/0x7f06a48710fbe5ffb27972ff1f8e008cf54bc204"
+                  "/dashboard/0x5c8b4e60c9ed75441f48e18586d3a8043921b05c"
                 )
               }
             />
