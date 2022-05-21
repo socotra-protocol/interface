@@ -13,20 +13,22 @@ import {
   useSocotraBranchManager,
 } from "../../../hooks/contracts/useSocotraBranchManager"
 import { TokenType } from "../../../hooks/useCovalent"
-import { useSnapshot } from "../../../hooks/useSnapshot"
 import { MembershipsCard } from "../MembershipsCard"
 import { Payout } from "../Payout"
 import { PayoutButton } from "../PayoutButton"
+import { Proposal } from "../Proposal"
+import { ProposalBuild } from "../ProposalBuild"
 
 export const DashboardDetailPage = () => {
   const { id: managerAddr } = useParams()
   const { branchInfo } = useSocotraBranchManager()
-  const { space, getSpace } = useSnapshot()
   const { tokenInfo } = useERC20()
   const { account } = useWeb3React()
   const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
   const isMember = true
   const isOwner = true
+  const isCreateSpace = true
+  const spaceName = "zunnoon.eth"
 
   //check token
   useEffect(() => {
@@ -80,6 +82,17 @@ export const DashboardDetailPage = () => {
         </div>
         <div className=" bg-white p-[24px]">
           {isMember && <Payout subDAO={subDAO} />}
+          {isCreateSpace ? (
+            isOwner ? (
+              <Proposal spaceName={spaceName} subDAOInfo={subDAO} />
+            ) : (
+              <></>
+            )
+          ) : isOwner ? (
+            <ProposalBuild subDAOInfo={subDAO} />
+          ) : (
+            <></>
+          )}
           {/* {!isOwner ? (
             <ProposalSetting subDAOToken={subDAOToken} />
           ) : (
