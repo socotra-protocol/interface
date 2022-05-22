@@ -116,7 +116,7 @@ export const DashboardDetailPage = () => {
                 address: subDAO?.subDAOToken?.address,
                 symbol: "SubDAO",
                 name: subDAO?.subDAOToken?.symbol,
-                balance: subDAO?.subDAOToken?.balance,
+                balance: subDAO?.subDAOToken?.totalSupply,
               }}
               onSelectToken={() => {}}
               onChange={() => {}}

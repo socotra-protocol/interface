@@ -149,7 +149,7 @@ export const useERC20 = () => {
         decimals: _decimals,
         address: erc20Address,
         logo: "",
-        totalSupply: _totalSupply,
+        totalSupply: formatFixed(_totalSupply, _decimals),
         branchBalance: _balanceManagerAddr
           ? formatFixed(_balanceManagerAddr, _decimals)
           : undefined,

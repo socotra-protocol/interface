@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { PrimaryButton, SecondaryButton } from "../../components/Button";
 import { useSnapshot } from "../../hooks/useSnapshot";
-import * as am5 from "@amcharts/amcharts5";
-import * as am5percent from "@amcharts/amcharts5/percent";
-import * as am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import { Modal } from "../../components/Modal";
 import { Proposal, ProposalLink } from "./Proposal";
 import { useWeb3React } from "@web3-react/core";
