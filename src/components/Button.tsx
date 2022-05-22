@@ -11,14 +11,19 @@ export const PrimaryButton = ({
   children,
   dark,
   light,
+  outlined,
   ...props
 }: ButtonProps) => {
-  const colorClassName = dark
+  let colorClassName = dark
     ? "bg-primary-dark text-white"
     : light
     ? "bg-primary-light text-primary-dark"
     : "bg-primary text-white"
 
+
+if(outlined) {
+  colorClassName =  'bg-white-light text-primary-dark border border-primary-dark'
+}
   return (
     <button
       {...props}

@@ -5,76 +5,73 @@ import * as am5 from "@amcharts/amcharts5"
 import * as am5percent from "@amcharts/amcharts5/percent"
 import * as am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 import { Modal } from "../../components/Modal"
+import { Proposal, ProposalLink } from "./Proposal"
+import { useWeb3React } from "@web3-react/core"
 
 export const ProposalMember = () => {
   const mock =
-    "0x30de54437727cd516863f81bc3be7107a71305e444d59e8a1775a3fd0ac54b3c"
+    "0x7397b1ad42bc06ce64af37f187df8d54612da0d476faac87d227c8167250aaca"
 
   const main =
     "0xf7963cc433f8c649e2f24eade26740ac40df98010670a38449d8a4ad8b78b58f"
-  const { getProposal, vote } = useSnapshot()
+  const { getProposal, vote, getVoter, getScores } = useSnapshot()
+  const { account } = useWeb3React()
 
   const [proposal, setProposal] = useState<any>()
+  const [mainProposal, setMainProposal] = useState<any>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [msgModal, setMsgModal] = useState<string>("")
 
+  const [choices, setChoices] = useState<any>({})
+  const [totalVp, setTotalVp] = useState<number>(0)
+  const [meVote, setMeVote] = useState<number>()
+
+  console.log(choices)
+
   useEffect(() => {
-    fetch()
-  }, [])
-
-  const setChart = (data: any) => {
-    let root = am5.Root.new("chartdiv")
-    let chart = root.container.children.push(
-      am5percent.PieChart.new(root, {
-        startAngle: 180,
-        endAngle: 360,
-        layout: root.verticalLayout,
-        innerRadius: am5.percent(50),
-      })
-    )
-    let series = chart.series.push(
-      am5percent.PieSeries.new(root, {
-        startAngle: 180,
-        endAngle: 360,
-        valueField: "value",
-        categoryField: "category",
-        alignLabels: false,
-      })
-    )
-    series.states.create("hidden", {
-      startAngle: 180,
-      endAngle: 180,
-    })
-
-    series.slices.template.setAll({
-      cornerRadius: 5,
-    })
-
-    series.ticks.template.setAll({
-      forceHidden: true,
-    })
-    if (data?.votes === 0) {
-      series.data.setAll(
-        data?.choices.map((item: any, idx: number) => {
-          return { value: 1, category: item }
-        })
-      )
-    } else {
-      series.data.setAll(
-        data?.choices.map((item: any, idx: number) => {
-          return { value: data?.scores[idx], category: item }
-        })
-      )
+    if (account) {
+      fetch()
     }
-
-    series.appear(100, 100)
-  }
+  }, [account])
 
   const fetch = async () => {
     const data = await getProposal(mock)
-    console.log(data)
+    const mainData = await getProposal(main)
+    setMainProposal(mainData)
     setProposal(data)
-    setChart(data)
+    const voter: any[] = await getVoter(mock)
+
+    const totalVp = voter.reduce((total, item) => {
+      return total + item.vp
+    }, 0)
+
+    const choices: { [key: string]: number } = {}
+    const scores: { [key: string]: number }[] = await getScores(
+      data?.space?.id,
+      data?.strategies,
+      voter.map((item) => item.voter)
+    )
+
+    console.log(voter)
+
+    let meVote: any = null
+    voter?.map((item) => {
+      if (choices[item.choice] === undefined) {
+        choices[item.choice] = 0
+      }
+      console.log("a", item.voter, scores[0][item.voter])
+      choices[item.choice] = choices[item.choice] + scores[0][item.voter]
+      if (item.voter.toLocaleLowerCase() === account!.toLocaleLowerCase()) {
+        meVote = item.choice
+      }
+      console.log("choices", choices)
+    })
+
+    console.log("s", scores)
+    console.log(choices)
+    setChoices(choices)
+    setMeVote(meVote)
+    setTotalVp(totalVp)
   }
 
   const handleVote = async (choice: number) => {
@@ -86,42 +83,60 @@ export const ProposalMember = () => {
   }
   return (
     <>
-      <div className="bg-white-dark rounded-[16px] p-[36px] mb-[16px]">
-        <div>
-          <div className="flex justify-between items-center mb-[8px]">
-            <div className="text-[20px] text-secondary-dark mb-[8px]">
-              Proposal : {proposal?.title}
-            </div>
-            <div className="flex items-center gap-[16px]">
-              <a
-                rel="noreferrer"
-                target="_blank"
-                href={`https://snapshot.org/#/${proposal?.space?.id}/proposal/${proposal?.id}`}
-              >
-                <PrimaryButton light>ReadMore</PrimaryButton>
-              </a>
-              <a
-                rel="noreferrer"
-                target="_blank"
-                href={`https://snapshot.org/#/${proposal?.space?.id}/proposal/${main}`}
-              >
-                <PrimaryButton dark>Related</PrimaryButton>
-              </a>
-            </div>
-          </div>
-          <div id="chartdiv" style={{ width: "100%", height: "200px" }}></div>
-          <div className="grid grid-cols-2 gap-[16px]">
-            {proposal?.choices.map((c: string, i: number) => (
-              <SecondaryButton
-                key={`choice-${i}`}
-                dark
-                onClick={() => handleVote(i)}
-                className="text-secondary-dark bg-white-light p-[16px] text-center text-[16px] rounded-[16px]"
-              >
-                {c}
-              </SecondaryButton>
-            ))}
-          </div>
+      <div className="bg-white-light border border-white-dark rounded-[16px] p-[36px] mb-[16px]">
+        <div className="grid grid-cols-2 gap-[8px] mb-[16px]">
+          <ProposalLink
+            label="Sub Snapshot Proposal ID :"
+            className=""
+            link={`https://snapshot.org/#/${proposal?.space?.id}/proposal/${proposal?.id}`}
+            id={proposal?.id}
+          />
+          <ProposalLink
+            label="Main Snapshot Proposal ID :"
+            className=""
+            link={`https://snapshot.org/#/${mainProposal?.space?.id}/proposal/${mainProposal?.id}`}
+            id={mainProposal?.id}
+          />
+        </div>
+        <div className="font-medium text-[16px] text-secondary mb-[8px]">
+          Proposal Detail
+        </div>
+        <div className="text-[24px] font-medium text-secondary-dark mb-[8px]">
+          {proposal?.title}
+        </div>
+        <div className="line-clamp-2 text-secondary mb-[16px]">
+          {proposal?.body}
+        </div>
+        <div
+          className={`grid grid-cols-${proposal?.choices.length} gap-[16px] `}
+        >
+          {proposal?.choices.map((c: string, i: number) => (
+            <PrimaryButton
+              key={`choice-${i}`}
+              outlined={meVote !== i + 1}
+              dark
+              onClick={() => handleVote(i)}
+              className="text-[16px] rounded-[16px] py-[24px]"
+            >
+              {meVote ? (
+                <div className="flex justify-between items-center">
+                  <div>{c}</div>
+                  <div className="flex gap-[8px]">
+                    <div className=" text-primary-light">
+                      {choices[i + 1] || 0} {proposal?.symbol}
+                    </div>
+                    <div className=" text">
+                      {choices[i + 1]
+                        ? `${(choices[i + 1] * 100) / totalVp}%`
+                        : "0%"}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                c
+              )}
+            </PrimaryButton>
+          ))}
         </div>
       </div>
       <Modal visible={isLoading}>

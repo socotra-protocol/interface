@@ -15,13 +15,27 @@ import { truncateAddress } from "../../utils/wallet"
 import { ProposalMember } from "./ProposalMember"
 import dayjs from "dayjs"
 
-export const ProposalLink = ({ link, id }: { link?: string; id?: string }) => {
+export const ProposalLink = ({
+  link,
+  id,
+  label,
+  className,
+}: {
+  link?: string
+  id?: string
+  label?: string
+  className?: string
+}) => {
   return (
     <a target="_blank" href={link} rel="noreferrer">
-      <div className="bg-white-dark p-[16px] flex gap-[16px] justify-between items-center rounded-[16px]">
+      <div
+        className={`bg-white-dark p-[16px] flex gap-[16px] justify-between items-center rounded-[16px] ${className}`}
+      >
         <div className="flex items-center gap-[8px]">
-          <div className=" text-secondary font-medium">Proposal ID :</div>
-          <div className="text-secondary-dark">{truncateString(id!)}</div>
+          <div className=" text-secondary font-medium">
+            {label || "Proposal ID :"}
+          </div>
+          <div className="text-secondary-dark">{id && truncateString(id!)}</div>
         </div>
         <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
       </div>
@@ -181,7 +195,7 @@ export const Proposal = (props: Props) => {
                   {proposal?.body}
                 </p>
                 <div className="border border-white-dark p-[8px]  rounded-[8px] mb-[8px]">
-                  <div className="flex items-center justify-between text-secondary-dark">
+                  <div className="flex items-center justify-between text-secondary-dark mb-[8px]">
                     <div className="text-secondary">Start Date </div>
                     <div>
                       {dayjs(proposal?.start * 1000).format(
@@ -189,9 +203,7 @@ export const Proposal = (props: Props) => {
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="border border-white-dark p-[8px]  rounded-[8px] mb-[16px]">
-                  <div className="flex items-center justify-between text-secondary-dark ">
+                  <div className="flex items-center justify-between text-secondary-dark mb-[8px]">
                     <div className="text-secondary">End Date </div>
                     <div>
                       {dayjs((+proposal.end - Number(time) * 60) * 1000).format(

@@ -2,6 +2,7 @@ import snapshot from "@snapshot-labs/snapshot.js"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
 import axios from "axios"
+import { useEther } from "./useEther"
 
 const hub = "https://hub.snapshot.org" // or https://testnet.snapshot.org for testnet
 const client = new snapshot.Client712(hub)
@@ -16,6 +17,7 @@ export type CreateProposalType = {
 }
 export const useSnapshot = () => {
   const { library, account } = useWeb3React()
+  const { getBlockNumber } = useEther()
 
   const vote = async (
     space: string,
@@ -123,5 +125,55 @@ export const useSnapshot = () => {
     console.log(receipt)
     return receipt
   }
-  return { vote, createProposal, space, getSpace, getProposal }
+
+  const getVoter = async (proposalID: string) => {
+    const url = "https://hub.snapshot.org/graphql"
+
+    const data = {
+      operationName: "Votes",
+      variables: {
+        id: proposalID,
+        orderBy: "vp",
+        orderDirection: "desc",
+        first: 30000,
+        voter: "",
+        skip: 0,
+      },
+      query:
+        "query Votes($id: String!, $first: Int, $skip: Int, $orderBy: String, $orderDirection: OrderDirection, $voter: String) {\n  votes(\n    first: $first\n    skip: $skip\n    where: {proposal: $id, vp_gt: 0, voter: $voter}\n    orderBy: $orderBy\n    orderDirection: $orderDirection\n  ) {\n    ipfs\n    voter\n    choice\n    vp\n    vp_by_strategy\n  }\n}",
+    }
+    const res = await axios.post(url, data)
+    const votes = res.data.data.votes
+    return votes
+  }
+
+  const getScores = async (
+    space: string,
+    strategies: any,
+    addresses: string[]
+  ) => {
+    const snapshot = await getBlockNumber()
+    const url = "https://score.snapshot.org/api/scores"
+    const data = {
+      params: {
+        space,
+        network: "4",
+        snapshot,
+        strategies,
+        addresses: addresses,
+      },
+    }
+    const res = await axios.post(url, data)
+
+    return res.data.result.scores
+  }
+  return {
+    vote,
+    createProposal,
+    space,
+    getSpace,
+    getProposal,
+    getVoter,
+    getScores,
+  }
 }
