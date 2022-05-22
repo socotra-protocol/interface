@@ -12,10 +12,10 @@ export const useSocotraGraph = () => {
   }
 
   const branch = async (id: string) => {
-    const body = {
-      query: `{\n  branch(id :"${id}") {\n    id\n    name\n    owner\n    imageUrl\n    parentToken\n    voteToken\n    parentAmount\n  }\n \n}\n`,
-      variables: null,
-    }
+    const body ={
+      "query": `{\n  branch(id:\"${id}\") {\n    id\n    name\n    owner\n    imageUrl\n    voteToken\n    parentToken\n    parentAmount\n  }\n}\n`,
+      "variables": null
+  }
     const { data } = await axios.post(url, body)
     return data.data.branch
   }

@@ -73,16 +73,16 @@ export const DashboardDetailPage = () => {
     console.log(info);
 
     // const info = await branchInfo(managerAddr!)
-    const mainDAOToken: TokenType = await tokenInfo(
-      info?.parentToken!,
-      managerAddress
-    );
-    const subDAOToken: TokenType = await tokenInfo(info?.voteToken!);
+    // const mainDAOToken: TokenType = await tokenInfo(
+    //   info?.parentToken!,
+    //   managerAddress
+    // );
+    // const subDAOToken: TokenType = await tokenInfo(info?.voteToken!);
 
     setSubDAO({
       ...info,
-      mainDAOToken: mainDAOToken!,
-      subDAOToken: subDAOToken!,
+      // mainDAOToken: mainDAOToken!,
+      // subDAOToken: subDAOToken!,
     });
   };
 
