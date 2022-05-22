@@ -167,9 +167,7 @@ export const useSocotraBranchManager = () => {
     if (contract) {
       const inBytes = ethers.utils.formatBytes32String(spaceId)
       console.log(inBytes)
-      const tx = await contract.delegateSpace(inBytes, {
-        gasLimit: 42000,
-      })
+      const tx = await contract.delegateSpace(inBytes)
       await tx.wait()
     }
   }
