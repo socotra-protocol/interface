@@ -22,6 +22,7 @@ import { Proposal } from "../Proposal"
 import { ProposalBuild } from "../ProposalBuild"
 import { ProposalMember } from "../ProposalMember"
 import { useSocotraGraph } from "../../../hooks/useSocotraGraph"
+import { formatFixed, parseFixed } from "@ethersproject/bignumber"
 
 type SubDAODBType = {
   domain: string | null
@@ -32,6 +33,7 @@ type SubDAODBType = {
   voteProxyAddress: string | null
 }
 export const DashboardDetailPage = () => {
+  const [members, setMembers] = useState<any>()
   const { branch, membersByBranch } = useSocotraGraph()
   const { tokenInfo } = useERC20()
   const { account } = useWeb3React()
@@ -53,7 +55,6 @@ export const DashboardDetailPage = () => {
   }, [])
 
   const isMember = true
-  const isOwner = true
 
   // const inBytes = ethers.utils.formatBytes32String(spaceName)
   // console.log(inBytes)
@@ -89,7 +90,7 @@ export const DashboardDetailPage = () => {
 
   const fetchMember = async () => {
     const data = await membersByBranch(managerAddress!)
-    console.log("data", data)
+    setMembers(data)
   }
 
   return (
@@ -129,14 +130,16 @@ export const DashboardDetailPage = () => {
         <div className=" bg-white p-[24px]">
           {isMember && <Payout subDAO={subDAO} />}
           {subDAOInfo?.domain ? (
-            isOwner ? (
+            account?.toLocaleLowerCase() ===
+            subDAO?.owner?.toLocaleLowerCase() ? (
               <Proposal spaceName={subDAOInfo?.domain} subDAOInfo={subDAO} />
             ) : (
               memberProposals.map((proposal, index) => (
                 <ProposalMember proposalDB={proposal} />
               ))
             )
-          ) : isOwner ? (
+          ) : account?.toLocaleLowerCase() ===
+            subDAO?.owner?.toLocaleLowerCase() ? (
             <ProposalBuild subDAOInfo={subDAO} fetcher={fetchInfo} />
           ) : (
             <></>
@@ -154,23 +157,23 @@ export const DashboardDetailPage = () => {
                   Memberships
                 </div>
                 <div className="text-secondary text-[16px] font-medium">
-                  8 members
+                  {members?.length} members
                 </div>
               </div>
-              <div>
-                {/* <SecondaryButton outlined dark>
-                  Manage member
-                </SecondaryButton> */}
-              </div>
+              <div></div>
             </div>
             <div className="grid gap-[8px]">
-              {Array.from({ length: 9 }).map((_, idx: number) => (
+              {members?.map((m: any, idx: number) => (
                 <MembershipsCard
                   key={`member-${idx}`}
-                  address={""}
-                  subDAOAmount={"1"}
-                  mainDAOAmount={"1"}
-                  action={isOwner && <PayoutButton subDAO={subDAO} />}
+                  address={m?.member?.address}
+                  subDAOAmount={formatFixed(parseFixed(m.totalTokens), 18)}
+                  mainDAOAmount={formatFixed(parseFixed(m.rewardAmount), 18)}
+                  action={
+                    account?.toLocaleLowerCase() ===
+                      subDAO?.owner?.toLocaleLowerCase() &&
+                    m.claimingTokens !== "0" && <PayoutButton subDAO={subDAO} />
+                  }
                   labels={["Vote token", "Rewards token"]}
                 />
               ))}
