@@ -32,7 +32,7 @@ type SubDAODBType = {
   voteProxyAddress: string | null;
 };
 export const DashboardDetailPage = () => {
-  const { branch } = useSocotraGraph();
+  const { branch, membersByBranch } = useSocotraGraph();
   const { tokenInfo } = useERC20();
   const { account } = useWeb3React();
   const [subDAO, setSubDAO] = useState<any | null>(null);
@@ -61,6 +61,7 @@ export const DashboardDetailPage = () => {
   useEffect(() => {
     if (account && managerAddress) {
       fetchInfo();
+      fetchMember();
     }
   }, [managerAddress, account]);
 
@@ -86,7 +87,11 @@ export const DashboardDetailPage = () => {
     });
   };
 
-  console.log(subDAO);
+  const fetchMember = async () => {
+    const data = await membersByBranch(managerAddress!);
+    console.log("data", data);
+  };
+
   return (
     <Layout>
       <div className="grid grid-cols-dashboard-detail">
