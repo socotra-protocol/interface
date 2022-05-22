@@ -37,7 +37,7 @@ export const DashboardDetailPage = () => {
   const { branch } = useSocotraGraph()
   const { tokenInfo } = useERC20()
   const { account } = useWeb3React()
-  const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
+  const [subDAO, setSubDAO] = useState<any | null>(null)
   const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>()
   const [proposal, setProposal] = useState<any>()
   const { getSubDAO } = useSubDAO()
@@ -68,12 +68,14 @@ export const DashboardDetailPage = () => {
       info?.parentToken!,
       managerAddr
     )
-    const subDAOToken: TokenType = await tokenInfo(info?.voteToken!)
+    console.log("mainDAOToken", mainDAOToken)
+    // const subDAOToken: TokenType = await tokenInfo(info?.voteToken!)
+    // console.log("subDAOToken", subDAOToken)
 
     setSubDAO({
       ...info,
       mainDAOToken: mainDAOToken!,
-      subDAOToken: subDAOToken!,
+      // subDAOToken: subDAOToken!,
     })
   }
 
@@ -110,7 +112,7 @@ export const DashboardDetailPage = () => {
           <div className=" text-secondary-dark text-[24px] font-medium mb-[16px]">
             Owner
           </div>
-          <MemberCard size="small" />
+          <MemberCard size="small" wallet={{ address: subDAO?.owner }} />
         </div>
         <div className=" bg-white p-[24px]">
           {isMember && <Payout subDAO={subDAO} />}

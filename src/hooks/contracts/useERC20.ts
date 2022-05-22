@@ -10,6 +10,9 @@ export const useERC20 = () => {
   const getContract = (address: string) => {
     if (!active || !chainId) return
 
+    // const provider = new ethers.providers.JsonRpcProvider(
+    //   process.env.REACT_APP_INFURA
+    // )
     const provider = new ethers.providers.Web3Provider(library.provider)
     const signer = provider.getSigner()
 
@@ -31,10 +34,10 @@ export const useERC20 = () => {
     }
     return null
   }
-  const balanceOf = async (erc20Address: string) => {
+  const balanceOf = async (erc20Address: string, addr?: string) => {
     const contract = await getContract(erc20Address)
     if (contract) {
-      return await contract.balanceOf(account)
+      return await contract.balanceOf(addr || account)
     }
     return null
   }
@@ -79,10 +82,22 @@ export const useERC20 = () => {
     const _name = await name(erc20Address)
     const _decimals = await decimals(erc20Address)
     const _totalSupply = await totalSupply(erc20Address)
+
     let _balanceManagerAddr = null
     if (managerAddr) {
-      _balanceManagerAddr = await balanceOf(managerAddr!)
+      _balanceManagerAddr = await balanceOf(_balance, managerAddr!)
     }
+
+    console.log({
+      symbol: _symbol,
+      balance: formatFixed(_balance, _decimals),
+      name: _name,
+      decimals: _decimals,
+      address: erc20Address,
+      logo: "",
+      totalSupply: Number(formatFixed(_totalSupply, _decimals)).toFixed(),
+      branchBalance: formatFixed(_balanceManagerAddr, _decimals),
+    })
     return {
       symbol: _symbol,
       balance: formatFixed(_balance, _decimals),
