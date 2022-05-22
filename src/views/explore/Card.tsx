@@ -1,10 +1,12 @@
 import { faCopy } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { truncateAddress } from "../../utils/wallet"
 type Props = {
   onClick?: () => void
+  item?: any
 }
 export const Card = (props: Props) => {
-  const { onClick } = props
+  const { onClick, item } = props
   return (
     <div
       className="border border-white-dark rounded-[32px] cursor-pointer"
@@ -17,7 +19,7 @@ export const Card = (props: Props) => {
             SubDAOName
           </div>
           <div className="text-[16px] font-medium text-secondary">
-            0xa7...b3{" "}
+            {item ? truncateAddress(item.id) : "0x22....222"}{" "}
             <FontAwesomeIcon icon={faCopy} className="text-secondary" />
           </div>
         </div>

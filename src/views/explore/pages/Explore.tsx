@@ -1,9 +1,24 @@
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
 import { Layout } from "../../../core/Layout"
+import { useSocotraGraph } from "../../../hooks/useSocotraGraph"
 import { Card } from "../Card"
 
 export const Explore = () => {
   const navigate = useNavigate()
+  const { branchs } = useSocotraGraph()
+
+  const [list, setList] = useState<any[]>([])
+
+  useEffect(() => {
+    fetch()
+  }, [])
+  
+  const fetch = async () => {
+    const data = await branchs()
+    console.log(data)
+    setList(data)
+  }
 
   return (
     <Layout>
@@ -12,14 +27,11 @@ export const Explore = () => {
           SubDAOs Explore
         </div>
         <div className="grid grid-cols-3 gap-[16px]">
-          {Array.from({ length: 27 }).map((_, idx: number) => (
+          {list.map((item, idx: number) => (
             <Card
               key={`card-${idx}`}
-              onClick={() =>
-                navigate(
-                  "/dashboard/0xFa88Db8e23c979bD862Ee3Bdf882f383EDF33aE3"
-                )
-              }
+              item={item}
+              onClick={() => navigate(`/dashboard/${item.id}`)}
             />
           ))}
         </div>

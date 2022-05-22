@@ -21,6 +21,7 @@ import { PayoutButton } from "../PayoutButton"
 import { Proposal } from "../Proposal"
 import { ProposalBuild } from "../ProposalBuild"
 import { ProposalMember } from "../ProposalMember"
+import { useSocotraGraph } from "../../../hooks/useSocotraGraph"
 
 type SubDAODBType = {
   domain: string | null
@@ -33,6 +34,7 @@ type SubDAODBType = {
 export const DashboardDetailPage = () => {
   const { id: managerAddr } = useParams()
   const { branchInfo } = useSocotraBranchManager()
+  const { branch } = useSocotraGraph()
   const { tokenInfo } = useERC20()
   const { account } = useWeb3React()
   const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
@@ -43,23 +45,30 @@ export const DashboardDetailPage = () => {
 
   const isMember = true
   const isOwner = true
-  const isCreateSpace = true
-  // const spaceName = "zunnoon.eth"
 
   // const inBytes = ethers.utils.formatBytes32String(spaceName)
   // console.log(inBytes)
   //check token
   useEffect(() => {
-    fetchInfo()
-  }, [managerAddr])
+    if (account && managerAddr) {
+      fetchInfo()
+    }
+  }, [managerAddr, account])
 
   const fetchInfo = async () => {
     const data = await getSubDAO(managerAddr!)
     setSubDAOInfo(data)
 
-    const info = await branchInfo(managerAddr!)
-    const mainDAOToken: TokenType = await tokenInfo(info?.parentTokenAddress!)
-    const subDAOToken: TokenType = await tokenInfo(info?.voteTokenAddress!)
+    const info = await branch(managerAddr!)
+
+    console.log(info)
+
+    // const info = await branchInfo(managerAddr!)
+    const mainDAOToken: TokenType = await tokenInfo(
+      info?.parentToken!,
+      managerAddr
+    )
+    const subDAOToken: TokenType = await tokenInfo(info?.voteToken!)
 
     setSubDAO({
       ...info,
@@ -68,6 +77,7 @@ export const DashboardDetailPage = () => {
     })
   }
 
+  console.log(subDAO)
   return (
     <Layout>
       <div className="grid grid-cols-dashboard-detail">
@@ -77,9 +87,9 @@ export const DashboardDetailPage = () => {
             <SelectToken
               value={{
                 symbol: "MainDAO",
-                address: "",
-                name: "",
-                balance: "",
+                address: subDAO?.mainDAOToken?.address,
+                name: subDAO?.mainDAOToken?.symbol,
+                balance: subDAO?.mainDAOToken?.branchBalance,
               }}
               onSelectToken={() => {}}
               onChange={() => {}}

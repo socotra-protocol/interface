@@ -45,6 +45,13 @@ export const useERC20 = () => {
     }
     return null
   }
+  const totalSupply = async (erc20Address: string) => {
+    const contract = await getContract(erc20Address)
+    if (contract) {
+      return await contract.totalSupply()
+    }
+    return null
+  }
 
   const approve = async (
     erc20Address: string,
@@ -62,12 +69,20 @@ export const useERC20 = () => {
     }
   }
 
-  const tokenInfo = async (erc20Address: string): Promise<TokenType> => {
+  const tokenInfo = async (
+    erc20Address: string,
+    managerAddr?: string
+  ): Promise<TokenType> => {
     const _symbol = await symbol(erc20Address)
     const _balance = await balanceOf(erc20Address)
+
     const _name = await name(erc20Address)
     const _decimals = await decimals(erc20Address)
-
+    const _totalSupply = await totalSupply(erc20Address)
+    let _balanceManagerAddr = null
+    if (managerAddr) {
+      _balanceManagerAddr = await balanceOf(managerAddr!)
+    }
     return {
       symbol: _symbol,
       balance: formatFixed(_balance, _decimals),
@@ -75,7 +90,18 @@ export const useERC20 = () => {
       decimals: _decimals,
       address: erc20Address,
       logo: "",
+      totalSupply: Number(formatFixed(_totalSupply, _decimals)).toFixed(),
+      branchBalance: formatFixed(_balanceManagerAddr, _decimals),
     }
   }
-  return { getContract, approve, decimals, name, balanceOf, symbol, tokenInfo }
+  return {
+    getContract,
+    approve,
+    decimals,
+    name,
+    balanceOf,
+    symbol,
+    tokenInfo,
+    totalSupply,
+  }
 }
