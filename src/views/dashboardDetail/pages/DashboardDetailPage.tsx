@@ -13,7 +13,6 @@ import { useERC20 } from "../../../hooks/contracts/useERC20";
 import {
   BranchInfo,
   useSocotraBranchManager,
-<<<<<<< HEAD
 } from "../../../hooks/contracts/useSocotraBranchManager";
 import { TokenType } from "../../../hooks/useCovalent";
 import { MembershipsCard } from "../MembershipsCard";
@@ -23,18 +22,7 @@ import { Proposal } from "../Proposal";
 import { ProposalBuild } from "../ProposalBuild";
 import { ProposalMember } from "../ProposalMember";
 import { useSocotraGraph } from "../../../hooks/useSocotraGraph";
-=======
-} from "../../../hooks/contracts/useSocotraBranchManager"
-import { TokenType } from "../../../hooks/useCovalent"
-import { MembershipsCard } from "../MembershipsCard"
-import { Payout } from "../Payout"
-import { PayoutButton } from "../PayoutButton"
-import { Proposal } from "../Proposal"
-import { ProposalBuild } from "../ProposalBuild"
-import { ProposalMember } from "../ProposalMember"
-import { useSocotraGraph } from "../../../hooks/useSocotraGraph"
-import { formatFixed, parseFixed } from "@ethersproject/bignumber"
->>>>>>> ce9c6157a7435b3de7f2eba4db1804de0013a07d
+import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 
 type SubDAODBType = {
   domain: string | null;
@@ -45,18 +33,18 @@ type SubDAODBType = {
   voteProxyAddress: string | null;
 };
 export const DashboardDetailPage = () => {
-  const [members, setMembers] = useState<any>()
-  const { branch, membersByBranch } = useSocotraGraph()
-  const { tokenInfo } = useERC20()
-  const { account } = useWeb3React()
-  const [subDAO, setSubDAO] = useState<any | null>(null)
-  const { getSubDAO } = useSubDAO()
-  const { getProposalDB } = useProposal()
-  const { id: managerAddress } = useParams()
-  const { branchInfo } = useSocotraBranchManager()
-  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>()
-  const [proposal, setProposal] = useState<any>()
-  const [memberProposals, setMemberProposals] = useState<any[]>([])
+  const [members, setMembers] = useState<any>();
+  const { branch, membersByBranch } = useSocotraGraph();
+  const { tokenInfo } = useERC20();
+  const { account } = useWeb3React();
+  const [subDAO, setSubDAO] = useState<any | null>(null);
+  const { getSubDAO } = useSubDAO();
+  const { getProposalDB } = useProposal();
+  const { id: managerAddress } = useParams();
+  const { branchInfo } = useSocotraBranchManager();
+  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>();
+  const [proposal, setProposal] = useState<any>();
+  const [memberProposals, setMemberProposals] = useState<any[]>([]);
   const fetchMemberProposal = async () => {
     const memberProposals = await getProposalDB(managerAddress!);
     setMemberProposals(memberProposals);
@@ -66,12 +54,7 @@ export const DashboardDetailPage = () => {
     fetchMemberProposal();
   }, []);
 
-<<<<<<< HEAD
   const isMember = true;
-  const isOwner = true;
-=======
-  const isMember = true
->>>>>>> ce9c6157a7435b3de7f2eba4db1804de0013a07d
 
   // const inBytes = ethers.utils.formatBytes32String(spaceName)
   // console.log(inBytes)
@@ -106,15 +89,9 @@ export const DashboardDetailPage = () => {
   };
 
   const fetchMember = async () => {
-<<<<<<< HEAD
     const data = await membersByBranch(managerAddress!);
-    console.log("data", data);
+    setMembers(data);
   };
-=======
-    const data = await membersByBranch(managerAddress!)
-    setMembers(data)
-  }
->>>>>>> ce9c6157a7435b3de7f2eba4db1804de0013a07d
 
   return (
     <Layout>
