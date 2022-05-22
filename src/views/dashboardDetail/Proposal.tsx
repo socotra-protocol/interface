@@ -1,21 +1,21 @@
 import {
   faArrowUpRightFromSquare,
   faPlus,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useState } from "react"
-import { PrimaryButton, SecondaryButton } from "../../components/Button"
-import { LabelInput } from "../../components/Input"
-import { Modal } from "../../components/Modal"
-import { BranchInfo } from "../../hooks/contracts/useSocotraBranchManager"
-import { useEther } from "../../hooks/useEther"
-import { useSnapshot } from "../../hooks/useSnapshot"
-import { truncateString } from "../../utils/string"
-import { truncateAddress } from "../../utils/wallet"
-import { ProposalMember } from "./ProposalMember"
-import dayjs from "dayjs"
-import { useProposal } from "../../hooks/api/useProposal"
-import { useParams } from "react-router"
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useState } from "react";
+import { PrimaryButton, SecondaryButton } from "../../components/Button";
+import { LabelInput } from "../../components/Input";
+import { Modal } from "../../components/Modal";
+import { BranchInfo } from "../../hooks/contracts/useSocotraBranchManager";
+import { useEther } from "../../hooks/useEther";
+import { useSnapshot } from "../../hooks/useSnapshot";
+import { truncateString } from "../../utils/string";
+import { truncateAddress } from "../../utils/wallet";
+import { ProposalMember } from "./ProposalMember";
+import dayjs from "dayjs";
+import { useProposal } from "../../hooks/api/useProposal";
+import { useParams } from "react-router";
 
 export const ProposalLink = ({
   link,
@@ -23,10 +23,10 @@ export const ProposalLink = ({
   label,
   className,
 }: {
-  link?: string
-  id?: string
-  label?: string
-  className?: string
+  link?: string;
+  id?: string;
+  label?: string;
+  className?: string;
 }) => {
   return (
     <a target="_blank" href={link} rel="noreferrer">
@@ -42,56 +42,57 @@ export const ProposalLink = ({
         <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
       </div>
     </a>
-  )
-}
+  );
+};
 
 type Props = {
-  spaceName: string
-  subDAOInfo: BranchInfo | null
-}
+  spaceName: string;
+  subDAOInfo: BranchInfo | null;
+};
 export const Proposal = (props: Props) => {
-  const { id: managerAddress } = useParams()
+  const { id: managerAddress } = useParams();
 
-  const { spaceName, subDAOInfo } = props
-  const { createProposal, getProposal } = useSnapshot()
-  const { createProposalDB } = useProposal()
-  const { getBlockNumber } = useEther()
+  const { spaceName, subDAOInfo } = props;
+  const { createProposal, getProposal } = useSnapshot();
+  const { createProposalDB } = useProposal();
+  const { getBlockNumber } = useEther();
 
-  const [visible, setVisible] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [msgModal, setMsgModal] = useState<string>("")
-  const [url, setUrl] = useState<string>("")
-  const [time, setTime] = useState<string>("")
-  const [step, setStep] = useState<number>(1)
-  const [proposal, setProposal] = useState<any>()
-
+  const [visible, setVisible] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [msgModal, setMsgModal] = useState<string>("");
+  const [url, setUrl] = useState<string>("");
+  const [time, setTime] = useState<string>("");
+  const [step, setStep] = useState<number>(1);
+  const [proposal, setProposal] = useState<any>();
+  const [memberProposals, setMemberProposals] = useState<any[]>([]);
+  const { getProposalDB } = useProposal();
   const fetchProposal = async () => {
-    const proposalInfo = await getProposal(url)
-    setProposal(proposalInfo)
-  }
+    const proposalInfo = await getProposal(url);
+    setProposal(proposalInfo);
+  };
 
   const handleNext = async () => {
-    await fetchProposal()
-    setStep(2)
-  }
+    await fetchProposal();
+    setStep(2);
+  };
 
   const handleRegisterProposal = async () => {
-    setMsgModal("Fetch Proposal on Snapshot.")
-    setIsLoading(true)
+    setMsgModal("Fetch Proposal on Snapshot.");
+    setIsLoading(true);
     // const arr = url.split("/")
     // const proposalId = arr[arr.length - 1]
 
-    const proposalId = url
+    const proposalId = url;
 
-    const minus = Number(time) * 60
+    const minus = Number(time) * 60;
 
-    console.log("proposalID ", proposalId, " minus : ", minus)
+    console.log("proposalID ", proposalId, " minus : ", minus);
 
-    const proposalInfo = await getProposal(proposalId)
-    console.log("proposal", proposalInfo)
+    const proposalInfo = await getProposal(proposalId);
+    console.log("proposal", proposalInfo);
 
     //
-    const currentTime = Number((new Date().getTime() / 1000).toFixed())
+    const currentTime = Number((new Date().getTime() / 1000).toFixed());
 
     const strategies = [
       {
@@ -113,10 +114,10 @@ export const Proposal = (props: Props) => {
           delegationSpace: spaceName,
         },
       },
-    ]
+    ];
 
-    const snapshot = await getBlockNumber()
-    setMsgModal("Waiting for signature approval 1 of 1")
+    const snapshot = await getBlockNumber();
+    setMsgModal("Waiting for signature approval 1 of 1");
 
     try {
       const result = await createProposal(
@@ -130,24 +131,34 @@ export const Proposal = (props: Props) => {
         snapshot, // get block number now
         "4",
         JSON.stringify(strategies)
-      )
-      console.log("Create Proposal Completed : ", result)
-      setMsgModal("Register Proposal.")
+      );
+      console.log("Create Proposal Completed : ", result);
+      setMsgModal("Register Proposal.");
 
       await createProposalDB({
         managerAddress: managerAddress?.toLocaleLowerCase()!,
         mainProposalId: proposalId?.toLocaleLowerCase(),
         subProposalId: result.id?.toLocaleLowerCase(),
-      })
-      setIsLoading(false)
-      setVisible(false)
-      setStep(1)
+        type: "snapshot",
+      });
+      setIsLoading(false);
+      setVisible(false);
+      setStep(1);
     } catch (error) {
-      console.log(error)
-      setIsLoading(false)
-      setStep(1)
+      console.log(error);
+      setIsLoading(false);
+      setStep(1);
     }
-  }
+  };
+
+  const fetchMemberProposal = async () => {
+    const memberProposals = await getProposalDB(managerAddress!);
+    setMemberProposals(memberProposals);
+  };
+
+  useEffect(() => {
+    fetchMemberProposal();
+  }, []);
 
   return (
     <>
@@ -158,7 +169,13 @@ export const Proposal = (props: Props) => {
           Create Proposal
         </PrimaryButton>
       </div>
-      {isLoading ? <></> : <ProposalMember />}
+      {isLoading ? (
+        <></>
+      ) : (
+        memberProposals.map((proposal, index) => (
+          <ProposalMember proposalDB={proposal} />
+        ))
+      )}
 
       <Modal visible={visible}>
         <div className="w-[560px] h-[760px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
@@ -253,5 +270,5 @@ export const Proposal = (props: Props) => {
         </div>
       </Modal>
     </>
-  )
-}
+  );
+};
