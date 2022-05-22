@@ -72,10 +72,10 @@ export const Payout = (props: Props) => {
               />
               <div>
                 <ClaimSubDAOTokenButton symbol={subSymbol} />
-                <RequestFundsButton symbol={subSymbol} />
-                {/* <PrimaryButton dark onClick={handleRequestPayout}>
-                  Request Funds
-                </PrimaryButton> */}
+                <RequestFundsButton
+                  symbol={subSymbol}
+                  address={subDAO?.voteToken}
+                />
               </div>
             </div>
           </div>

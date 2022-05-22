@@ -37,7 +37,7 @@ export const PayoutButton = (props: Props) => {
       const ipfs = await json({ image: ipfsImage, description })
       setMsgModal("Waiting for transactions approval 1 of 1")
       setIsLoading(true)
-      await requestPayout(managerAddr!, amount, account!, ipfs)
+      // await requestPayout(managerAddr!, amount, account!, ipfs)
       setIsLoading(false)
       setVisible(false)
     } catch (error) {

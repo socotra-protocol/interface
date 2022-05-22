@@ -14,12 +14,13 @@ import { usePinata } from "../../hooks/usePinata"
 type Props = {
   subDAO?: BranchInfo | null
   symbol?: string
+  address: string
 }
 export const RequestFundsButton = (props: Props) => {
   const { id: managerAddr } = useParams()
   const { account } = useWeb3React()
 
-  const { subDAO, symbol } = props
+  const { address, symbol } = props
   const { requestPayout } = useSocotraBranchManager()
 
   const [visible, setVisible] = useState<boolean>(false)
@@ -36,9 +37,11 @@ export const RequestFundsButton = (props: Props) => {
       setIsLoading(true)
       const ipfsImage = await upload(file)
       const ipfs = await json({ image: ipfsImage, description })
-      setMsgModal("Waiting for transactions approval 1 of 1")
+      setMsgModal("Waiting for transactions approval 1 of 2")
       setIsLoading(true)
-      await requestPayout(managerAddr!, amount, account!, ipfs)
+      await requestPayout(managerAddr!, amount, account!, ipfs, address, () => {
+        setMsgModal("Waiting for transactions approval 2 of 2")
+      })
       setIsLoading(false)
       setVisible(false)
     } catch (error) {

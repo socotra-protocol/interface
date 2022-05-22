@@ -1,3 +1,5 @@
+import { useERC20 } from "./useERC20"
+import { useEther } from "./../useEther"
 import { parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
 import { ethers } from "ethers"
@@ -16,6 +18,7 @@ export type BranchInfo = {
 
 export const useSocotraBranchManager = () => {
   const { library, active, chainId } = useWeb3React()
+  const { approve } = useERC20()
 
   const getContract = (address: string) => {
     if (!active || !chainId) return
@@ -116,6 +119,8 @@ export const useSocotraBranchManager = () => {
     amount: string,
     receiver: string,
     proof: string,
+    subDAOAddr: string,
+    callbackAfterApprove?: () => void,
     decimal = 18
   ) => {
     if (!active || !chainId) return null
@@ -123,12 +128,12 @@ export const useSocotraBranchManager = () => {
     const contract = await getContract(managerAddr)
 
     if (contract) {
-      const inBytes = ethers.utils.formatBytes32String(proof)
-
+      await approve(subDAOAddr, managerAddr, amount)
+      callbackAfterApprove && callbackAfterApprove()
       const tx = await contract.requestPayout(
         parseFixed(amount, decimal).toString(),
         receiver,
-        inBytes,
+        proof,
         { gasLimit: 42000 }
       )
       await tx.wait()
