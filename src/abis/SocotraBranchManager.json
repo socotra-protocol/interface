@@ -130,9 +130,9 @@
       },
       {
         "indexed": false,
-        "internalType": "bytes",
+        "internalType": "string",
         "name": "proof",
-        "type": "bytes"
+        "type": "string"
       }
     ],
     "name": "RequestPayout",
@@ -316,6 +316,57 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "expiry",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "v",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "r",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "delegatesParentBySig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "contract ISocotraFactory",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      },
+      {
         "internalType": "address",
         "name": "_parentToken",
         "type": "address"
@@ -417,9 +468,9 @@
         "type": "address"
       },
       {
-        "internalType": "bytes",
+        "internalType": "string",
         "name": "proof",
-        "type": "bytes"
+        "type": "string"
       }
     ],
     "name": "requestPayout",
@@ -449,6 +500,24 @@
       }
     ],
     "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "member",
+        "type": "address"
+      },
+      {
+        "internalType": "bool",
+        "name": "approval",
+        "type": "bool"
+      }
+    ],
+    "name": "updateSigner",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
