@@ -36,7 +36,7 @@ module.exports = {
         member: "230px 1fr 180px",
         subdao: "400px 1fr",
         "member-input": "230px 1fr 60px",
-        "dashboard-detail": "320px 1fr",
+        "dashboard-detail": "360px 1fr",
       },
     },
   },

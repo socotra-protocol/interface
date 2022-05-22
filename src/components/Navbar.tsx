@@ -6,10 +6,27 @@ import { Link, useLocation } from "react-router-dom"
 import { useConnectWallet } from "../hooks/useConnectWallet"
 import { useWeb3React } from "@web3-react/core"
 import { truncateAddress } from "../utils/wallet"
+import { useEffect, useState } from "react"
+import { useEagerConnect } from "../hooks/useEagerConnect"
+import { useInactiveListener } from "../hooks/useInactiveListener"
+
 export const Navbar = () => {
   const { metamask } = useConnectWallet()
   const { pathname } = useLocation()
-  const { account, activate, deactivate, active } = useWeb3React()
+  const { deactivate, account, active, connector } = useWeb3React()
+
+  // handle logic to recognize the connector currently being activated
+  const [activatingConnector, setActivatingConnector] = useState()
+  useEffect(() => {
+    console.log("Wallet running")
+    if (activatingConnector && activatingConnector === connector) {
+      setActivatingConnector(undefined)
+    }
+  }, [activatingConnector, connector])
+
+  // mount only once or face issues :P
+  const triedEager = useEagerConnect()
+  useInactiveListener(!triedEager || !!activatingConnector)
 
   return (
     <div className="p-[32px] grid grid-cols-navbar gap-[40px] border-b border-white-dark">

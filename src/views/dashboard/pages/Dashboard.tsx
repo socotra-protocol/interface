@@ -12,7 +12,14 @@ export const Dashboard = () => {
         </div>
         <div className="grid grid-cols-3 gap-[16px]">
           {Array.from({ length: 3 }).map((_, idx: number) => (
-            <Card onClick={() => navigate("/dashboard/1")} />
+            <Card
+              key={`card-${idx}`}
+              onClick={() =>
+                navigate(
+                  "/dashboard/0xFa88Db8e23c979bD862Ee3Bdf882f383EDF33aE3"
+                )
+              }
+            />
           ))}
         </div>
         <div className="text-[36px] font-semibold text-secondary-dark my-[32px]">
@@ -20,7 +27,13 @@ export const Dashboard = () => {
         </div>
         <div className="grid grid-cols-3 gap-[16px]">
           {Array.from({ length: 9 }).map((_, idx: number) => (
-            <Card onClick={() => navigate("/dashboard/1")} />
+            <Card
+              onClick={() =>
+                navigate(
+                  "/dashboard/0xFa88Db8e23c979bD862Ee3Bdf882f383EDF33aE3"
+                )
+              }
+            />
           ))}
         </div>
       </div>

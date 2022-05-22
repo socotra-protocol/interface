@@ -5,7 +5,7 @@ import SocotraFactoryABI from "../../abis/SocotraFactory.json"
 import { useERC20 } from "./useERC20"
 
 export const socotraFactoryAddress: { [key: string]: string } = {
-  "4": "0x26E6df2A1B11E551e6e9eF1a01C528223d9CFcc1",
+  "4": "0x1B65b5411f6E06a7cc46d1523BABf2E7153D94d3",
 }
 
 export const useSocotraFactory = () => {
