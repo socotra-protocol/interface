@@ -53,11 +53,6 @@ export const Payout = (props: Props) => {
     if (isENSName(ensName)) {
       setENSName(ensName)
     }
-
-    const main = await symbol(subDAO?.parentToken)
-    const sub = await symbol(subDAO?.voteToken)
-    setMainSymbol(main)
-    setSubSymbol(sub)
   }
 
   return (
@@ -71,9 +66,9 @@ export const Payout = (props: Props) => {
                 wallet={{ address: account!, ens: ensName }}
               />
               <div>
-                <ClaimSubDAOTokenButton symbol={subSymbol} />
+                <ClaimSubDAOTokenButton symbol={subDAO?.subDAOToken?.symbol} />
                 <RequestFundsButton
-                  symbol={subSymbol}
+                  symbol={subDAO?.subDAOToken?.symbol}
                   address={subDAO?.voteToken}
                 />
               </div>
@@ -86,7 +81,8 @@ export const Payout = (props: Props) => {
                 SubDAO Token
               </div>
               <div className="text-secondary-dark text-[16px] font-medium">
-                {formatFixed(parseFixed(info?.totalTokens), 18)} {subSymbol}
+                {formatFixed(parseFixed(info?.totalTokens), 18)}{" "}
+                {subDAO?.subDAOToken?.symbol}
               </div>
             </div>
             <div>
@@ -94,7 +90,8 @@ export const Payout = (props: Props) => {
                 MainDAO Token
               </div>
               <div className="text-secondary-light text-[16px] font-medium">
-                {formatFixed(parseFixed(info?.rewardAmount), 18)} {mainSymbol}
+                {formatFixed(parseFixed(info?.rewardAmount), 18)}{" "}
+                {subDAO?.mainDAOToken?.symbol}
               </div>
             </div>
           </div>

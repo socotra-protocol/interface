@@ -22,7 +22,7 @@ export const PayoutButton = (props: Props) => {
   const { payout } = useSocotraGraph()
 
   const { subDAO, address } = props
-  const { requestPayout, issuePayout } = useSocotraBranchManager()
+  const { issuePayout } = useSocotraBranchManager()
 
   const [visible, setVisible] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -30,8 +30,9 @@ export const PayoutButton = (props: Props) => {
   const [file, setFile] = useState<File | null>(null)
   const [description, setDescription] = useState<string>("")
   const [amount, setAmount] = useState<string>("")
-  const [payoutInfo, setPayoutInfo] = useState<string>("")
-  const { upload, json , unbox } = usePinata()
+  const [payoutInfo, setPayoutInfo] = useState<any>("")
+  const [ipfsInfo, setIpfsInfo] = useState<any>("")
+  const { upload, json, unbox } = usePinata()
 
   useEffect(() => {
     fetch()
@@ -41,30 +42,25 @@ export const PayoutButton = (props: Props) => {
     const data = await payout(address)
     const payoutBranch = data.filter((i: any) => i?.branch?.id === managerAddr)
     if (payoutBranch.length === 1) {
-      unbox(payoutBranch[0].proof)
+      const info = await unbox(payoutBranch[0].proof)
+      console.log(info, "info")
+      setIpfsInfo(info)
       setPayoutInfo(payoutBranch[0])
     }
   }
 
   const handlePayout = async () => {
     try {
-      setMsgModal("Uploading data to IPFS")
       setIsLoading(true)
-      const ipfsImage = await upload(file)
-      const ipfs = await json({ image: ipfsImage, description })
       setMsgModal("Waiting for transactions approval 1 of 1")
       setIsLoading(true)
-      // await requestPayout(managerAddr!, amount, account!, ipfs)
+      await issuePayout(managerAddr!, payoutInfo.payoutId)
       setIsLoading(false)
       setVisible(false)
     } catch (error) {
       setIsLoading(false)
       setVisible(false)
     }
-  }
-
-  const handleUpload = (file: File) => {
-    setFile(file)
   }
 
   return (
@@ -78,24 +74,19 @@ export const PayoutButton = (props: Props) => {
             <div className="text-[36px] text-secondary-dark font-medium text-center mb-[16px]">
               Payout
             </div>
-            <div className="h-[68px] mb-[8px]">
-              <LabelInput
-                label="MainDAO token amount to request"
-                icon={<>{subDAO?.mainDAOToken?.symbol}</>}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </div>
             <div className="text-[16px] text-secondary-dark mb-[8px]">
-              Request describtion
+              Receiver : {payoutInfo?.receiver}
             </div>
             <div className="mb-[8px]">
-              <UploadProof onChange={handleUpload} />
+              <img
+                src={`https://cloudflare-ipfs.com/ipfs/` + ipfsInfo?.image}
+                alt=""
+                className="w-[200px] h-[200px]"
+              />
             </div>
             <div>
-              <LabelInput
-                label="Request description"
-                onChange={(e) => setDescription(e.target.value)}
-              />
+              <div>Describtion : </div>
+              <div>{ipfsInfo?.description}</div>
             </div>
           </div>
 
