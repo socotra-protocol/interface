@@ -32,12 +32,12 @@ type SubDAODBType = {
   voteProxyAddress: string | null;
 };
 export const DashboardDetailPage = () => {
-  const { branch } = useSocotraGraph()
-  const { tokenInfo } = useERC20()
-  const { account } = useWeb3React()
-  const [subDAO, setSubDAO] = useState<any | null>(null)
-  const { getSubDAO } = useSubDAO()
-  const { getProposalDB } = useProposal()
+  const { branch } = useSocotraGraph();
+  const { tokenInfo } = useERC20();
+  const { account } = useWeb3React();
+  const [subDAO, setSubDAO] = useState<any | null>(null);
+  const { getSubDAO } = useSubDAO();
+  const { getProposalDB } = useProposal();
   const { id: managerAddress } = useParams();
   const { branchInfo } = useSocotraBranchManager();
   const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>();
