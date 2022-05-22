@@ -1,3 +1,5 @@
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
 import { PrimaryButton, SecondaryButton } from "../../components/Button"
 import { LabelInput } from "../../components/Input"
@@ -68,7 +70,7 @@ export const ProposalBuild = (props: Props) => {
       filters: spaceInfo.filters,
     }
 
-    setMsgModal("Waiting for transactions approval 1 of 1")
+    setMsgModal("Waiting for signature approval 1 of 1")
     const result = await space(ENSName, settings)
     console.log("Update Space Completed", result)
     setIsLoading(false)
@@ -96,29 +98,37 @@ export const ProposalBuild = (props: Props) => {
         </PrimaryButton>
       </div>
       <Modal visible={visible}>
-        <div className="w-[560px] h-[340px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
+        <div className="w-[560px] h-[760px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
           <div>
             <div className="text-[36px] text-secondary-dark font-medium text-center mb-[16px]">
               Setup SubDAO space
             </div>
-
+            <div className=" text-secondary-dark mb-[8px]">
+              คุณจำเป็นต้องทำการสร้าง Space บน Snapshot, ไม่มี คลิ๊กที่นี่ นำ
+              ENS name ของคุณมาเชื่อมต่อกับเรา
+              <a
+                target="_blank"
+                href="https://snapshot.org/#/setup"
+                rel="noreferrer"
+                className="text-primary ml-[8px]"
+              >
+                click
+              </a>{" "}
+            </div>
+            <div className="bg-[#FFEFB8] p-[8px flex gap-[8px] p-[8px] items-center rounded-[8px]  mb-[8px]">
+              <FontAwesomeIcon
+                icon={faInfoCircle}
+                className="text-secondary-dark"
+              />
+              <p className="text-md text-secondary-dark">
+                User address must be set to controller
+              </p>
+            </div>
             <div className="h-[68px] mb-[8px]">
               <LabelInput
                 label="ENS register space snapshot"
                 onChange={(e) => setENSName(e.target.value)}
               />
-            </div>
-            <div className="text-[14px] text-center">
-              Don't forget set user address as controller <br />
-              If you not have space snapshot{" "}
-              <a
-                target="_blank"
-                href="https://snapshot.org/#/setup"
-                rel="noreferrer"
-                className="text-primary"
-              >
-                click
-              </a>{" "}
             </div>
           </div>
 

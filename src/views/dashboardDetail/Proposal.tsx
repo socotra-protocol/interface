@@ -1,4 +1,7 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons"
+import {
+  faArrowUpRightFromSquare,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
 import { PrimaryButton, SecondaryButton } from "../../components/Button"
@@ -7,7 +10,24 @@ import { Modal } from "../../components/Modal"
 import { BranchInfo } from "../../hooks/contracts/useSocotraBranchManager"
 import { useEther } from "../../hooks/useEther"
 import { useSnapshot } from "../../hooks/useSnapshot"
+import { truncateString } from "../../utils/string"
+import { truncateAddress } from "../../utils/wallet"
 import { ProposalMember } from "./ProposalMember"
+import dayjs from "dayjs"
+
+export const ProposalLink = ({ link, id }: { link?: string; id?: string }) => {
+  return (
+    <a target="_blank" href={link} rel="noreferrer">
+      <div className="bg-white-dark p-[16px] flex gap-[16px] justify-between items-center rounded-[16px]">
+        <div className="flex items-center gap-[8px]">
+          <div className=" text-secondary font-medium">Proposal ID :</div>
+          <div className="text-secondary-dark">{truncateString(id!)}</div>
+        </div>
+        <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+      </div>
+    </a>
+  )
+}
 
 type Props = {
   spaceName: string
@@ -23,12 +43,26 @@ export const Proposal = (props: Props) => {
   const [msgModal, setMsgModal] = useState<string>("")
   const [url, setUrl] = useState<string>("")
   const [time, setTime] = useState<string>("")
+  const [step, setStep] = useState<number>(1)
+  const [proposal, setProposal] = useState<any>()
+
+  const fetchProposal = async () => {
+    const proposalInfo = await getProposal(url)
+    setProposal(proposalInfo)
+  }
+
+  const handleNext = async () => {
+    await fetchProposal()
+    setStep(2)
+  }
 
   const handleRegisterProposal = async () => {
     setMsgModal("Fetch Proposal on Snapshot.")
     setIsLoading(true)
-    const arr = url.split("/")
-    const proposalId = arr[arr.length - 1]
+    // const arr = url.split("/")
+    // const proposalId = arr[arr.length - 1]
+
+    const proposalId = url
 
     const minus = Number(time) * 60
 
@@ -63,7 +97,7 @@ export const Proposal = (props: Props) => {
     ]
 
     const snapshot = await getBlockNumber()
-    setMsgModal("Waiting for transactions approval 1 of 1")
+    setMsgModal("Waiting for signature approval 1 of 1")
 
     try {
       const result = await createProposal(
@@ -82,9 +116,11 @@ export const Proposal = (props: Props) => {
 
       setIsLoading(false)
       setVisible(false)
+      setStep(1)
     } catch (error) {
       console.log(error)
       setIsLoading(false)
+      setStep(1)
     }
   }
 
@@ -99,31 +135,73 @@ export const Proposal = (props: Props) => {
       </div>
       <ProposalMember />
       <Modal visible={visible}>
-        <div className="w-[670px] h-[420px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
+        <div className="w-[560px] h-[760px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
           <div>
             <div className="text-[36px] text-secondary-dark font-medium text-center mb-[16px]">
-              Create SubDAO Gov Proposal
+              {step === 1 ? "Create Proposal" : "Confirm information"}
             </div>
-            <div className="mb-[8px]">
-              <div className="bg-white-dark text-center p-[8px]">
-                snapshot.org/#/ens.eth/proposal/0x7..00
-              </div>
-            </div>
+            {step === 1 ? (
+              <>
+                <div className=" text-secondary-dark mb-[8px]">
+                  Copy your proposal ID from the url of the proposal
+                </div>
+                <div className="mb-[8px] bg-white border border-white-dark p-[4px] rounded-[8px]">
+                  <img src="/assets/proposalid.png" alt="" className="w-full" />
+                </div>
 
-            <div className="h-[68px] mb-[8px]">
-              <LabelInput
-                label="Proposal URL"
-                onChange={(e) => setUrl(e.target.value)}
-              />
-            </div>
-            <div className="h-[68px] mb-[8px]">
-              <LabelInput
-                label="Before time out"
-                onChange={(e) => setTime(e.target.value)}
-                icon={<>Min</>}
-              />
-            </div>
-            <div className="text-[14px] text-center"></div>
+                <div className="h-[68px] mb-[8px]">
+                  <LabelInput
+                    label="Proposal ID"
+                    onChange={(e) => setUrl(e.target.value)}
+                  />
+                </div>
+                <div className="h-[68px] mb-[8px]">
+                  <LabelInput
+                    label="Before time out"
+                    onChange={(e) => setTime(e.target.value)}
+                    icon={<>Min</>}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mb-[8px]">
+                  <ProposalLink
+                    link={`https://snapshot.org/#/${proposal?.space?.id}/proposal/${proposal?.id}`}
+                    id={proposal?.id}
+                  />
+                </div>
+                <div className="text-secondary font-medium mb-[8px]">
+                  Proposal Detail
+                </div>
+                <div className="text-secondary-dark font-medium text-[24px] mb-[18px]">
+                  {proposal?.title}
+                </div>
+                <p className="line-clamp-3 text-secondary mb-[8px]">
+                  {proposal?.body}
+                </p>
+                <div className="border border-white-dark p-[8px]  rounded-[8px] mb-[8px]">
+                  <div className="flex items-center justify-between text-secondary-dark">
+                    <div className="text-secondary">Start Date </div>
+                    <div>
+                      {dayjs(proposal?.start * 1000).format(
+                        "MMM DD, YYYY h:mm a"
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="border border-white-dark p-[8px]  rounded-[8px] mb-[16px]">
+                  <div className="flex items-center justify-between text-secondary-dark ">
+                    <div className="text-secondary">End Date </div>
+                    <div>
+                      {dayjs((+proposal.end - Number(time) * 60) * 1000).format(
+                        "MMM DD, YYYY h:mm a"
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div className=" grid grid-cols-4 justify-center gap-[8px]">
@@ -135,8 +213,11 @@ export const Proposal = (props: Props) => {
             >
               Cancel
             </SecondaryButton>
-            <PrimaryButton dark onClick={handleRegisterProposal}>
-              Create
+            <PrimaryButton
+              dark
+              onClick={step === 1 ? handleNext : handleRegisterProposal}
+            >
+              {step === 1 ? "Next" : "Create"}
             </PrimaryButton>
           </div>
         </div>

@@ -17,3 +17,9 @@ export const hexToBytes = (hex: string) => {
 export const stringToUTF8Bytes = (s: string) => {
   return new TextEncoder().encode(s)
 }
+
+export const truncateString = (string: string) => {
+  const match = string.match(/^([a-zA-Z0-9]{4})[a-zA-Z0-9]+([a-zA-Z0-9]{5})$/)
+  if (!match) return string
+  return `${match[1]}…${match[2]}`
+}
