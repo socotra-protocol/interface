@@ -8,15 +8,18 @@ export const useSocotraGraph = () => {
       variables: null,
     }
     const { data } = await axios.post(url, body)
+
     return data.data.branches
   }
 
   const branch = async (id: string) => {
+    console.log("querying branch")
     const body = {
       query: `{\n  branch(id:\"${id}\") {\n    id\n    name\n    owner\n    imageUrl\n    voteToken\n    parentToken\n    parentAmount\n  }\n}\n`,
       variables: null,
     }
     const { data } = await axios.post(url, body)
+    console.log("branch: ", data)
     return data.data.branch
   }
 
