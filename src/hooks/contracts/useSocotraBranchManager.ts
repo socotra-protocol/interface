@@ -133,8 +133,7 @@ export const useSocotraBranchManager = () => {
       const tx = await contract.requestPayout(
         parseFixed(amount, decimal).toString(),
         receiver,
-        proof,
-        { gasLimit: 42000 }
+        proof
       )
       await tx.wait()
       const provider = new ethers.providers.Web3Provider(library.provider)
