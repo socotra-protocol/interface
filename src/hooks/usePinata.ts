@@ -38,5 +38,10 @@ export const usePinata = () => {
     })
     return response.data.IpfsHash
   }
-  return { upload, json }
+
+  const unbox = async (hash: string) => {
+    const { data } = await axios.get(`https://cloudflare-ipfs.com/ipfs/${hash}`)
+    console.log(data)
+  }
+  return { upload, json, unbox }
 }

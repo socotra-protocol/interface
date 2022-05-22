@@ -176,7 +176,7 @@ export const DashboardDetailPage = () => {
                   action={
                     account?.toLocaleLowerCase() ===
                       subDAO?.owner?.toLocaleLowerCase() &&
-                    m.claimingTokens !== "0" && <PayoutButton subDAO={subDAO} />
+                    m.claimingTokens !== "0" && <PayoutButton subDAO={subDAO} address={m?.member?.id?.toLocaleLowerCase()} />
                   }
                   labels={["Vote token", "Rewards token"]}
                 />

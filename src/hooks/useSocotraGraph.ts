@@ -39,5 +39,13 @@ export const useSocotraGraph = () => {
     return data.data.memberBranches
   }
 
-  return { branchs, branch, members, membersByBranch }
+  const payout = async (id: string) => {
+    const body = {
+      query: `{\n  payouts(where:{receiver : "${id}"}){\n    payoutId\n    amount\n    proof\n    receiver\n    branch{\n      id\n    }\n  }\n}\n`,
+      variables: null,
+    }
+    const { data } = await axios.post(url, body)
+    return data.data.payouts
+  }
+  return { branchs, branch, members, membersByBranch, payout }
 }

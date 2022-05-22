@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { PrimaryButton, SecondaryButton } from "../../components/Button"
 import { LabelInput } from "../../components/Input"
@@ -10,15 +10,18 @@ import {
   useSocotraBranchManager,
 } from "../../hooks/contracts/useSocotraBranchManager"
 import { usePinata } from "../../hooks/usePinata"
+import { useSocotraGraph } from "../../hooks/useSocotraGraph"
 
 type Props = {
   subDAO: BranchInfo | null
+  address: string
 }
 export const PayoutButton = (props: Props) => {
   const { id: managerAddr } = useParams()
   const { account } = useWeb3React()
+  const { payout } = useSocotraGraph()
 
-  const { subDAO } = props
+  const { subDAO, address } = props
   const { requestPayout, issuePayout } = useSocotraBranchManager()
 
   const [visible, setVisible] = useState<boolean>(false)
@@ -27,7 +30,21 @@ export const PayoutButton = (props: Props) => {
   const [file, setFile] = useState<File | null>(null)
   const [description, setDescription] = useState<string>("")
   const [amount, setAmount] = useState<string>("")
-  const { upload, json } = usePinata()
+  const [payoutInfo, setPayoutInfo] = useState<string>("")
+  const { upload, json , unbox } = usePinata()
+
+  useEffect(() => {
+    fetch()
+  }, [])
+
+  const fetch = async () => {
+    const data = await payout(address)
+    const payoutBranch = data.filter((i: any) => i?.branch?.id === managerAddr)
+    if (payoutBranch.length === 1) {
+      unbox(payoutBranch[0].proof)
+      setPayoutInfo(payoutBranch[0])
+    }
+  }
 
   const handlePayout = async () => {
     try {
