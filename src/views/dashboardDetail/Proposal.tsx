@@ -14,6 +14,8 @@ import { truncateString } from "../../utils/string"
 import { truncateAddress } from "../../utils/wallet"
 import { ProposalMember } from "./ProposalMember"
 import dayjs from "dayjs"
+import { useProposal } from "../../hooks/api/useProposal"
+import { useParams } from "react-router"
 
 export const ProposalLink = ({
   link,
@@ -48,8 +50,11 @@ type Props = {
   subDAOInfo: BranchInfo | null
 }
 export const Proposal = (props: Props) => {
+  const { id: managerAddress } = useParams()
+
   const { spaceName, subDAOInfo } = props
   const { createProposal, getProposal } = useSnapshot()
+  const { createProposalDB } = useProposal()
   const { getBlockNumber } = useEther()
 
   const [visible, setVisible] = useState<boolean>(false)
@@ -127,7 +132,13 @@ export const Proposal = (props: Props) => {
         JSON.stringify(strategies)
       )
       console.log("Create Proposal Completed : ", result)
+      setMsgModal("Register Proposal.")
 
+      await createProposalDB({
+        managerAddress: managerAddress?.toLocaleLowerCase()!,
+        mainProposalId: proposalId?.toLocaleLowerCase(),
+        subProposalId: result.id?.toLocaleLowerCase(),
+      })
       setIsLoading(false)
       setVisible(false)
       setStep(1)
@@ -147,7 +158,8 @@ export const Proposal = (props: Props) => {
           Create Proposal
         </PrimaryButton>
       </div>
-      <ProposalMember />
+      {isLoading ? <></> : <ProposalMember />}
+
       <Modal visible={visible}>
         <div className="w-[560px] h-[760px] bg-white rounded-[24px] p-[48px] flex justify-between flex-col shadow-2xl">
           <div>

@@ -7,17 +7,19 @@ import * as am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
 import { Modal } from "../../components/Modal"
 import { Proposal, ProposalLink } from "./Proposal"
 import { useWeb3React } from "@web3-react/core"
+import { useProposal } from "../../hooks/api/useProposal"
+import { useParams } from "react-router"
 
-export const ProposalMember = () => {
-  const mock =
-    "0x7397b1ad42bc06ce64af37f187df8d54612da0d476faac87d227c8167250aaca"
+type Props = {}
+export const ProposalMember = ({}: Props) => {
+  const { id: managerAddr } = useParams()
 
-  const main =
-    "0xf7963cc433f8c649e2f24eade26740ac40df98010670a38449d8a4ad8b78b58f"
   const { getProposal, vote, getVoter, getScores } = useSnapshot()
   const { account } = useWeb3React()
+  const { getProposalDB } = useProposal()
 
   const [proposal, setProposal] = useState<any>()
+  const [proposalDB, setProposalDB] = useState<any>()
   const [mainProposal, setMainProposal] = useState<any>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [msgModal, setMsgModal] = useState<string>("")
@@ -29,17 +31,25 @@ export const ProposalMember = () => {
   console.log(choices)
 
   useEffect(() => {
-    if (account) {
+    fetchDb()
+  }, [])
+
+  useEffect(() => {
+    if (account && proposalDB) {
       fetch()
     }
-  }, [account])
+  }, [account, proposalDB])
 
+  const fetchDb = async () => {
+    const proposalDB = await getProposalDB(managerAddr!)
+    setProposalDB(proposalDB)
+  }
   const fetch = async () => {
-    const data = await getProposal(mock)
-    const mainData = await getProposal(main)
+    const data = await getProposal(proposalDB?.subProposalId)
+    const mainData = await getProposal(proposalDB?.mainProposalId)
     setMainProposal(mainData)
     setProposal(data)
-    const voter: any[] = await getVoter(mock)
+    const voter: any[] = await getVoter(proposalDB?.subProposalId)
 
     const totalVp = voter.reduce((total, item) => {
       return total + item.vp
@@ -81,6 +91,7 @@ export const ProposalMember = () => {
     setIsLoading(false)
     fetch()
   }
+  if (!proposalDB) return <></>
   return (
     <>
       <div className="bg-white-light border border-white-dark rounded-[16px] p-[36px] mb-[16px]">

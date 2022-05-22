@@ -1,4 +1,4 @@
-import { formatFixed } from "@ethersproject/bignumber"
+import { ethers } from "ethers"
 import { useWeb3React } from "@web3-react/core"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
@@ -7,6 +7,7 @@ import { Cover } from "../../../components/Cover"
 import { MemberCard } from "../../../components/MemberCard"
 import { SelectToken } from "../../../components/SelectToken"
 import { Layout } from "../../../core/Layout"
+import { useProposal } from "../../../hooks/api/useProposal"
 import { useSubDAO } from "../../../hooks/api/useSubDAO"
 import { useERC20 } from "../../../hooks/contracts/useERC20"
 import {
@@ -36,13 +37,17 @@ export const DashboardDetailPage = () => {
   const { account } = useWeb3React()
   const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
   const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>()
+  const [proposal, setProposal] = useState<any>()
   const { getSubDAO } = useSubDAO()
+  const { getProposalDB } = useProposal()
 
   const isMember = true
   const isOwner = true
   const isCreateSpace = true
-  const spaceName = "zunnoon.eth"
+  // const spaceName = "zunnoon.eth"
 
+  // const inBytes = ethers.utils.formatBytes32String(spaceName)
+  // console.log(inBytes)
   //check token
   useEffect(() => {
     fetchInfo()
@@ -51,6 +56,7 @@ export const DashboardDetailPage = () => {
   const fetchInfo = async () => {
     const data = await getSubDAO(managerAddr!)
     setSubDAOInfo(data)
+
     const info = await branchInfo(managerAddr!)
     const mainDAOToken: TokenType = await tokenInfo(info?.parentTokenAddress!)
     const subDAOToken: TokenType = await tokenInfo(info?.voteTokenAddress!)
@@ -100,7 +106,7 @@ export const DashboardDetailPage = () => {
           {isMember && <Payout subDAO={subDAO} />}
           {subDAOInfo?.domain ? (
             isOwner ? (
-              <Proposal spaceName={spaceName} subDAOInfo={subDAO} />
+              <Proposal spaceName={subDAOInfo?.domain} subDAOInfo={subDAO} />
             ) : (
               <ProposalMember />
             )
