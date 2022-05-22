@@ -12,13 +12,14 @@ import {
 import { usePinata } from "../../hooks/usePinata"
 
 type Props = {
-  subDAO: BranchInfo | null
+  subDAO?: BranchInfo | null
+  symbol?: string
 }
 export const ClaimSubDAOTokenButton = (props: Props) => {
   const { id: managerAddr } = useParams()
   const { account } = useWeb3React()
 
-  const { subDAO } = props
+  const { subDAO, symbol } = props
   const { memberClaimToken } = useSocotraBranchManager()
 
   const [visible, setVisible] = useState<boolean>(false)
@@ -58,7 +59,7 @@ export const ClaimSubDAOTokenButton = (props: Props) => {
             <div className="h-[68px] mb-[8px]">
               <LabelInput
                 label="SubDAO token amount to request"
-                icon={<>{subDAO?.subDAOToken?.symbol}</>}
+                icon={<>{symbol}</>}
                 onChange={(e) => setAmount(e.target.value)}
               />
             </div>

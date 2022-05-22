@@ -128,7 +128,11 @@ export const DashboardDetailPage = () => {
           <MemberCard size="small" wallet={{ address: subDAO?.owner }} />
         </div>
         <div className=" bg-white p-[24px]">
-          {isMember && <Payout subDAO={subDAO} />}
+          {members
+            ?.map((i: any) => i?.member?.id?.toLocaleLowerCase())
+            .includes(account?.toLocaleLowerCase()) && (
+            <Payout subDAO={subDAO} members={members} />
+          )}
           {subDAOInfo?.domain ? (
             account?.toLocaleLowerCase() ===
             subDAO?.owner?.toLocaleLowerCase() ? (
@@ -166,7 +170,7 @@ export const DashboardDetailPage = () => {
               {members?.map((m: any, idx: number) => (
                 <MembershipsCard
                   key={`member-${idx}`}
-                  address={m?.member?.address}
+                  address={m?.member?.id}
                   subDAOAmount={formatFixed(parseFixed(m.totalTokens), 18)}
                   mainDAOAmount={formatFixed(parseFixed(m.rewardAmount), 18)}
                   action={
