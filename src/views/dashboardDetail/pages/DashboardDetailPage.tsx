@@ -1,97 +1,98 @@
-import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { PrimaryButton, SecondaryButton } from "../../../components/Button";
-import { Cover } from "../../../components/Cover";
-import { MemberCard } from "../../../components/MemberCard";
-import { SelectToken } from "../../../components/SelectToken";
-import { Layout } from "../../../core/Layout";
-import { useProposal } from "../../../hooks/api/useProposal";
-import { useSubDAO } from "../../../hooks/api/useSubDAO";
-import { useERC20 } from "../../../hooks/contracts/useERC20";
+import { ethers } from "ethers"
+import { useWeb3React } from "@web3-react/core"
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { PrimaryButton, SecondaryButton } from "../../../components/Button"
+import { Cover } from "../../../components/Cover"
+import { MemberCard } from "../../../components/MemberCard"
+import { SelectToken } from "../../../components/SelectToken"
+import { Layout } from "../../../core/Layout"
+import { useProposal } from "../../../hooks/api/useProposal"
+import { useSubDAO } from "../../../hooks/api/useSubDAO"
+import { useERC20 } from "../../../hooks/contracts/useERC20"
 import {
   BranchInfo,
   useSocotraBranchManager,
-} from "../../../hooks/contracts/useSocotraBranchManager";
-import { TokenType } from "../../../hooks/useCovalent";
-import { MembershipsCard } from "../MembershipsCard";
-import { Payout } from "../Payout";
-import { PayoutButton } from "../PayoutButton";
-import { Proposal } from "../Proposal";
-import { ProposalBuild } from "../ProposalBuild";
-import { ProposalMember } from "../ProposalMember";
-import { useSocotraGraph } from "../../../hooks/useSocotraGraph";
-import { formatFixed, parseFixed } from "@ethersproject/bignumber";
+} from "../../../hooks/contracts/useSocotraBranchManager"
+import { TokenType } from "../../../hooks/useCovalent"
+import { MembershipsCard } from "../MembershipsCard"
+import { Payout } from "../Payout"
+import { PayoutButton } from "../PayoutButton"
+import { Proposal } from "../Proposal"
+import { ProposalBuild } from "../ProposalBuild"
+import { ProposalMember } from "../ProposalMember"
+import { useSocotraGraph } from "../../../hooks/useSocotraGraph"
+import { formatFixed, parseFixed } from "@ethersproject/bignumber"
 
 type SubDAODBType = {
-  domain: string | null;
-  id: string;
-  mainTokenAddress: string;
-  managerAddress: string;
-  subTokenAddress: string;
-  voteProxyAddress: string | null;
-};
+  domain: string | null
+  id: string
+  mainTokenAddress: string
+  managerAddress: string
+  subTokenAddress: string
+  voteProxyAddress: string | null
+}
 export const DashboardDetailPage = () => {
-  const [members, setMembers] = useState<any>();
-  const { branch, membersByBranch } = useSocotraGraph();
-  const { tokenInfo } = useERC20();
-  const { account } = useWeb3React();
-  const [subDAO, setSubDAO] = useState<any | null>(null);
-  const { getSubDAO } = useSubDAO();
-  const { getProposalDB } = useProposal();
-  const { id: managerAddress } = useParams();
-  const { branchInfo } = useSocotraBranchManager();
-  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>();
-  const [proposal, setProposal] = useState<any>();
-  const [memberProposals, setMemberProposals] = useState<any[]>([]);
+  const [members, setMembers] = useState<any>()
+  const { branch, membersByBranch } = useSocotraGraph()
+  const { tokenInfo } = useERC20()
+  const { account } = useWeb3React()
+  const [subDAO, setSubDAO] = useState<any | null>(null)
+  const { getSubDAO } = useSubDAO()
+  const { getProposalDB } = useProposal()
+  const { id: managerAddress } = useParams()
+  const { branchInfo } = useSocotraBranchManager()
+  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>()
+  const [proposal, setProposal] = useState<any>()
+  const [memberProposals, setMemberProposals] = useState<any[]>([])
   const fetchMemberProposal = async () => {
-    const memberProposals = await getProposalDB(managerAddress!);
-    setMemberProposals(memberProposals);
-  };
+    const memberProposals = await getProposalDB(managerAddress!)
+    setMemberProposals(memberProposals)
+  }
 
   useEffect(() => {
-    fetchMemberProposal();
-  }, []);
+    fetchMemberProposal()
+  }, [])
 
-  const isMember = true;
+  const isMember = true
 
   // const inBytes = ethers.utils.formatBytes32String(spaceName)
   // console.log(inBytes)
   //check token
   useEffect(() => {
     if (account && managerAddress) {
-      fetchInfo();
-      fetchMember();
+      fetchInfo()
+      fetchMember()
     }
-  }, [managerAddress, account]);
+  }, [managerAddress, account])
 
   const fetchInfo = async () => {
-    const data = await getSubDAO(managerAddress!);
-    setSubDAOInfo(data);
+    const data = await getSubDAO(managerAddress!)
+    setSubDAOInfo(data)
 
-    const info = await branch(managerAddress!);
+    const info = await branch(managerAddress!)
 
-    console.log(info);
+    console.log(info)
 
     // const info = await branchInfo(managerAddr!)
-    // const mainDAOToken: TokenType = await tokenInfo(
-    //   info?.parentToken!,
-    //   managerAddress
-    // );
-    // const subDAOToken: TokenType = await tokenInfo(info?.voteToken!);
+    const mainDAOToken: TokenType = await tokenInfo(
+      info?.parentToken!,
+      managerAddress
+    )
+    console.log("info?.voteToken", info?.voteToken)
+    const subDAOToken: TokenType = await tokenInfo(info?.voteToken!)
 
     setSubDAO({
       ...info,
-      // mainDAOToken: mainDAOToken!,
-      // subDAOToken: subDAOToken!,
-    });
-  };
+      mainDAOToken: mainDAOToken!,
+      subDAOToken: subDAOToken!,
+    })
+  }
 
   const fetchMember = async () => {
-    const data = await membersByBranch(managerAddress!);
-    setMembers(data);
-  };
+    const data = await membersByBranch(managerAddress!)
+    setMembers(data)
+  }
 
   return (
     <Layout>
@@ -112,10 +113,10 @@ export const DashboardDetailPage = () => {
             />
             <SelectToken
               value={{
-                address: "",
+                address: subDAO?.subDAOToken?.address,
                 symbol: "SubDAO",
-                name: "",
-                balance: "",
+                name: subDAO?.subDAOToken?.symbol,
+                balance: subDAO?.subDAOToken?.balance,
               }}
               onSelectToken={() => {}}
               onChange={() => {}}
@@ -176,7 +177,12 @@ export const DashboardDetailPage = () => {
                   action={
                     account?.toLocaleLowerCase() ===
                       subDAO?.owner?.toLocaleLowerCase() &&
-                    m.claimingTokens !== "0" && <PayoutButton subDAO={subDAO} address={m?.member?.id?.toLocaleLowerCase()} />
+                    m.claimingTokens !== "0" && (
+                      <PayoutButton
+                        subDAO={subDAO}
+                        address={m?.member?.id?.toLocaleLowerCase()}
+                      />
+                    )
                   }
                   labels={["Vote token", "Rewards token"]}
                 />
@@ -186,5 +192,5 @@ export const DashboardDetailPage = () => {
         </div>
       </div>
     </Layout>
-  );
-};
+  )
+}
