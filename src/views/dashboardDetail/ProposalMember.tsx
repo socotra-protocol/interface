@@ -1,97 +1,88 @@
-import { useEffect, useRef, useState } from "react"
-import { PrimaryButton, SecondaryButton } from "../../components/Button"
-import { useSnapshot } from "../../hooks/useSnapshot"
-import * as am5 from "@amcharts/amcharts5"
-import * as am5percent from "@amcharts/amcharts5/percent"
-import * as am5themes_Animated from "@amcharts/amcharts5/themes/Animated"
-import { Modal } from "../../components/Modal"
-import { Proposal, ProposalLink } from "./Proposal"
-import { useWeb3React } from "@web3-react/core"
-import { useProposal } from "../../hooks/api/useProposal"
-import { useParams } from "react-router"
+import { useEffect, useRef, useState } from "react";
+import { PrimaryButton, SecondaryButton } from "../../components/Button";
+import { useSnapshot } from "../../hooks/useSnapshot";
+import * as am5 from "@amcharts/amcharts5";
+import * as am5percent from "@amcharts/amcharts5/percent";
+import * as am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+import { Modal } from "../../components/Modal";
+import { Proposal, ProposalLink } from "./Proposal";
+import { useWeb3React } from "@web3-react/core";
+import { useProposal } from "../../hooks/api/useProposal";
+import { useParams } from "react-router";
 
-type Props = {}
-export const ProposalMember = ({}: Props) => {
-  const { id: managerAddr } = useParams()
+type Props = {
+  proposalDB: any;
+};
+export const ProposalMember = ({ proposalDB }: Props) => {
+  const { getProposal, vote, getVoter, getScores } = useSnapshot();
+  const { account } = useWeb3React();
 
-  const { getProposal, vote, getVoter, getScores } = useSnapshot()
-  const { account } = useWeb3React()
-  const { getProposalDB } = useProposal()
+  const [proposal, setProposal] = useState<any>();
 
-  const [proposal, setProposal] = useState<any>()
-  const [proposalDB, setProposalDB] = useState<any>()
-  const [mainProposal, setMainProposal] = useState<any>()
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [msgModal, setMsgModal] = useState<string>("")
+  const [mainProposal, setMainProposal] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [msgModal, setMsgModal] = useState<string>("");
 
-  const [choices, setChoices] = useState<any>({})
-  const [totalVp, setTotalVp] = useState<number>(0)
-  const [meVote, setMeVote] = useState<number>()
+  const [choices, setChoices] = useState<any>({});
+  const [totalVp, setTotalVp] = useState<number>(0);
+  const [meVote, setMeVote] = useState<number>();
 
-  console.log(choices)
-
-  useEffect(() => {
-    fetchDb()
-  }, [])
+  console.log(choices);
 
   useEffect(() => {
     if (account && proposalDB) {
-      fetch()
+      fetch();
     }
-  }, [account, proposalDB])
+  }, [account, proposalDB]);
 
-  const fetchDb = async () => {
-    const proposalDB = await getProposalDB(managerAddr!)
-    setProposalDB(proposalDB)
-  }
   const fetch = async () => {
-    const data = await getProposal(proposalDB?.subProposalId)
-    const mainData = await getProposal(proposalDB?.mainProposalId)
-    setMainProposal(mainData)
-    setProposal(data)
-    const voter: any[] = await getVoter(proposalDB?.subProposalId)
+    const data = await getProposal(proposalDB?.subProposalId);
+    const mainData = await getProposal(proposalDB?.mainProposalId);
+    setMainProposal(mainData);
+    setProposal(data);
+    const voter: any[] = await getVoter(proposalDB?.subProposalId);
 
     const totalVp = voter.reduce((total, item) => {
-      return total + item.vp
-    }, 0)
+      return total + item.vp;
+    }, 0);
 
-    const choices: { [key: string]: number } = {}
+    const choices: { [key: string]: number } = {};
     const scores: { [key: string]: number }[] = await getScores(
       data?.space?.id,
       data?.strategies,
       voter.map((item) => item.voter)
-    )
+    );
 
-    console.log(voter)
+    console.log(voter);
 
-    let meVote: any = null
+    let meVote: any = null;
     voter?.map((item) => {
       if (choices[item.choice] === undefined) {
-        choices[item.choice] = 0
+        choices[item.choice] = 0;
       }
-      console.log("a", item.voter, scores[0][item.voter])
-      choices[item.choice] = choices[item.choice] + scores[0][item.voter]
+      console.log("a", item.voter, scores[0][item.voter]);
+      choices[item.choice] = choices[item.choice] + scores[0][item.voter];
       if (item.voter.toLocaleLowerCase() === account!.toLocaleLowerCase()) {
-        meVote = item.choice
+        meVote = item.choice;
       }
-      console.log("choices", choices)
-    })
+      console.log("choices", choices);
+    });
 
-    console.log("s", scores)
-    console.log(choices)
-    setChoices(choices)
-    setMeVote(meVote)
-    setTotalVp(totalVp)
-  }
+    console.log("s", scores);
+    console.log(choices);
+    setChoices(choices);
+    setMeVote(meVote);
+    setTotalVp(totalVp);
+  };
 
   const handleVote = async (choice: number) => {
-    setMsgModal("Waiting for transactions approval 1 of 1")
-    setIsLoading(true)
-    await vote(proposal?.space?.id, proposal?.id, choice + 1)
-    setIsLoading(false)
-    fetch()
-  }
-  if (!proposalDB) return <></>
+    setMsgModal("Waiting for transactions approval 1 of 1");
+    setIsLoading(true);
+    await vote(proposal?.space?.id, proposal?.id, choice + 1);
+    setIsLoading(false);
+    fetch();
+  };
+  if (!proposalDB) return <></>;
   return (
     <>
       <div className="bg-white-light border border-white-dark rounded-[16px] p-[36px] mb-[16px]">
@@ -157,5 +148,5 @@ export const ProposalMember = ({}: Props) => {
         </div>
       </Modal>
     </>
-  )
-}
+  );
+};
