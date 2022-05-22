@@ -1,23 +1,33 @@
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react"
+import { useParams } from "react-router"
 import { PrimaryButton, SecondaryButton } from "../../components/Button"
 import { LabelInput } from "../../components/Input"
 import { Modal } from "../../components/Modal"
-import { BranchInfo } from "../../hooks/contracts/useSocotraBranchManager"
+import { useSubDAO } from "../../hooks/api/useSubDAO"
+import {
+  BranchInfo,
+  useSocotraBranchManager,
+} from "../../hooks/contracts/useSocotraBranchManager"
 import { useSnapshot } from "../../hooks/useSnapshot"
 
 type Props = {
   subDAOInfo: BranchInfo | null
+  fetcher: () => void
 }
 export const ProposalBuild = (props: Props) => {
-  const { subDAOInfo } = props
+  const { subDAOInfo, fetcher } = props
+  const { id: managerAddr } = useParams()
   const { getSpace, space } = useSnapshot()
 
   const [visible, setVisible] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [msgModal, setMsgModal] = useState<string>("")
   const [ENSName, setENSName] = useState<string>("")
+  const { registerSnapshotVoteProxy, delegateSpace } = useSocotraBranchManager()
+
+  const { createSubDAO, getSubDAO } = useSubDAO()
 
   const handleRegisterSpace = async () => {
     setMsgModal("Fetch Space on Snapshot.")
@@ -70,11 +80,22 @@ export const ProposalBuild = (props: Props) => {
       filters: spaceInfo.filters,
     }
 
-    setMsgModal("Waiting for signature approval 1 of 1")
+    setMsgModal("Waiting for signature approval 1 of 3")
     const result = await space(ENSName, settings)
+    const data = await getSubDAO(managerAddr!)
+    await createSubDAO({ ...data, domain: ENSName })
+
+    setMsgModal("Waiting for signature approval 2 of 3")
+
+    await registerSnapshotVoteProxy(managerAddr!)
+
+    setMsgModal("Waiting for signature approval 3 of 3")
+    await delegateSpace(managerAddr!, ENSName)
+
     console.log("Update Space Completed", result)
     setIsLoading(false)
     setVisible(false)
+    fetcher()
   }
   return (
     <>
@@ -104,8 +125,7 @@ export const ProposalBuild = (props: Props) => {
               Setup SubDAO space
             </div>
             <div className=" text-secondary-dark mb-[8px]">
-              คุณจำเป็นต้องทำการสร้าง Space บน Snapshot, ไม่มี คลิ๊กที่นี่ นำ
-              ENS name ของคุณมาเชื่อมต่อกับเรา
+              ENS and Snapshot Space are required, create
               <a
                 target="_blank"
                 href="https://snapshot.org/#/setup"

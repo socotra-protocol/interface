@@ -20,6 +20,7 @@ import { useSocotraBranchManager } from "../../../hooks/contracts/useSocotraBran
 import { wordingCreate } from "../../../constants/wording"
 import { useNavigate } from "react-router"
 import { useWeb3React } from "@web3-react/core"
+import { useSubDAO } from "../../../hooks/api/useSubDAO"
 export type DataType = {
   token?: TokenType
   amount?: string
@@ -38,6 +39,7 @@ export const CreateSubDAOPage = () => {
     useSocotraBranchManager()
   const { upload } = usePinata()
   const navigate = useNavigate()
+  const { createSubDAO } = useSubDAO()
 
   // 0xdDc9371da9C6216F0c3c4eA93eB93b3022Bb8c39
   const [data, setData] = useState<DataType | null>(null)
@@ -108,9 +110,12 @@ export const CreateSubDAOPage = () => {
 
     // await delegateSpace(managerAddr!, "zunnoon.eth")
 
-
-
     //send api
+    await createSubDAO({
+      managerAddress: managerAddr?.toLocaleLowerCase()!,
+      mainTokenAddress: data?.token?.address?.toLocaleLowerCase()!,
+      subTokenAddress: branch?.voteTokenAddress?.toLocaleLowerCase()!,
+    })
 
     //
     setVisible(false)
@@ -133,7 +138,13 @@ export const CreateSubDAOPage = () => {
       case CREATE_SUB_DAO_STEP.TOKEN_SETTING:
         return <TokenSetting data={data!} onChange={handleTokenSetting} />
       case CREATE_SUB_DAO_STEP.COMPLETE:
-        return <Complete data={data!} isCompleted={isCompleted} label={isCompleted ? 'Completed':'Confirm your result'} />
+        return (
+          <Complete
+            data={data!}
+            isCompleted={isCompleted}
+            label={isCompleted ? "Completed" : "Confirm your result"}
+          />
+        )
     }
   }, [value])
 

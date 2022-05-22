@@ -7,6 +7,7 @@ import { Cover } from "../../../components/Cover"
 import { MemberCard } from "../../../components/MemberCard"
 import { SelectToken } from "../../../components/SelectToken"
 import { Layout } from "../../../core/Layout"
+import { useSubDAO } from "../../../hooks/api/useSubDAO"
 import { useERC20 } from "../../../hooks/contracts/useERC20"
 import {
   BranchInfo,
@@ -20,12 +21,23 @@ import { Proposal } from "../Proposal"
 import { ProposalBuild } from "../ProposalBuild"
 import { ProposalMember } from "../ProposalMember"
 
+type SubDAODBType = {
+  domain: string | null
+  id: string
+  mainTokenAddress: string
+  managerAddress: string
+  subTokenAddress: string
+  voteProxyAddress: string | null
+}
 export const DashboardDetailPage = () => {
   const { id: managerAddr } = useParams()
   const { branchInfo } = useSocotraBranchManager()
   const { tokenInfo } = useERC20()
   const { account } = useWeb3React()
   const [subDAO, setSubDAO] = useState<BranchInfo | null>(null)
+  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>()
+  const { getSubDAO } = useSubDAO()
+
   const isMember = true
   const isOwner = true
   const isCreateSpace = true
@@ -37,9 +49,12 @@ export const DashboardDetailPage = () => {
   }, [managerAddr])
 
   const fetchInfo = async () => {
+    const data = await getSubDAO(managerAddr!)
+    setSubDAOInfo(data)
     const info = await branchInfo(managerAddr!)
     const mainDAOToken: TokenType = await tokenInfo(info?.parentTokenAddress!)
     const subDAOToken: TokenType = await tokenInfo(info?.voteTokenAddress!)
+
     setSubDAO({
       ...info,
       mainDAOToken: mainDAOToken!,
@@ -83,14 +98,14 @@ export const DashboardDetailPage = () => {
         </div>
         <div className=" bg-white p-[24px]">
           {isMember && <Payout subDAO={subDAO} />}
-          {isCreateSpace ? (
+          {subDAOInfo?.domain ? (
             isOwner ? (
               <Proposal spaceName={spaceName} subDAOInfo={subDAO} />
             ) : (
               <ProposalMember />
             )
           ) : isOwner ? (
-            <ProposalBuild subDAOInfo={subDAO} />
+            <ProposalBuild subDAOInfo={subDAO} fetcher={fetchInfo} />
           ) : (
             <></>
           )}
