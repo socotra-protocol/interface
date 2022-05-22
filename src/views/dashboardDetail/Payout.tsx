@@ -1,10 +1,12 @@
+import { formatFixed, parseFixed } from "@ethersproject/bignumber"
 import { useWeb3React } from "@web3-react/core"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useParams } from "react-router-dom"
 import { PrimaryButton, SecondaryButton } from "../../components/Button"
 import { Card } from "../../components/Card"
 import { MemberCard } from "../../components/MemberCard"
 import { Modal } from "../../components/Modal"
+import { useERC20 } from "../../hooks/contracts/useERC20"
 import {
   BranchInfo,
   useSocotraBranchManager,
@@ -14,10 +16,11 @@ import { ClaimSubDAOTokenButton } from "./ClaimSubDAOTokenButton"
 import { RequestFundsButton } from "./RequestFundsButton"
 
 type Props = {
-  subDAO: BranchInfo | null
+  subDAO: any | null
+  members?: any
 }
 export const Payout = (props: Props) => {
-  const { subDAO } = props
+  const { subDAO, members } = props
   const { account } = useWeb3React()
   const { id: managerAddr } = useParams()
   const { requestPayout, memberClaimToken } = useSocotraBranchManager()
@@ -26,16 +29,35 @@ export const Payout = (props: Props) => {
   const [visible, setVisible] = useState<boolean>(false)
   const [msgModal, setMsgModal] = useState<string>("")
   const [ensName, setENSName] = useState<string | undefined>(undefined)
+  const [mainSymbol, setMainSymbol] = useState<string | undefined>(undefined)
+  const [subSymbol, setSubSymbol] = useState<string | undefined>(undefined)
+
+  const { symbol } = useERC20()
+
+  const info = useMemo(() => {
+    const idx = members.findIndex(
+      (item: any) =>
+        item?.member?.id?.toLocaleLowerCase() === account?.toLocaleLowerCase()
+    )
+    return members[idx]
+  }, [members.length])
 
   useEffect(() => {
     fetchENS()
   }, [])
 
   const fetchENS = async () => {
+    setMainSymbol("loading...")
+    setSubSymbol("loading...")
     const ensName = await getENSName(account!)
     if (isENSName(ensName)) {
       setENSName(ensName)
     }
+
+    const main = await symbol(subDAO?.parentToken)
+    const sub = await symbol(subDAO?.voteToken)
+    setMainSymbol(main)
+    setSubSymbol(sub)
   }
 
   return (
@@ -49,11 +71,11 @@ export const Payout = (props: Props) => {
                 wallet={{ address: account!, ens: ensName }}
               />
               <div>
-                <ClaimSubDAOTokenButton subDAO={subDAO} />
-                <RequestFundsButton subDAO={subDAO} />
-                {/* <PrimaryButton dark onClick={handleRequestPayout}>
-                  Request Funds
-                </PrimaryButton> */}
+                <ClaimSubDAOTokenButton symbol={subSymbol} />
+                <RequestFundsButton
+                  symbol={subSymbol}
+                  address={subDAO?.voteToken}
+                />
               </div>
             </div>
           </div>
@@ -64,7 +86,7 @@ export const Payout = (props: Props) => {
                 SubDAO Token
               </div>
               <div className="text-secondary-dark text-[16px] font-medium">
-                3000 dCRV
+                {formatFixed(parseFixed(info?.totalTokens), 18)} {subSymbol}
               </div>
             </div>
             <div>
@@ -72,7 +94,7 @@ export const Payout = (props: Props) => {
                 MainDAO Token
               </div>
               <div className="text-secondary-light text-[16px] font-medium">
-                4000 CRV
+                {formatFixed(parseFixed(info?.rewardAmount), 18)} {mainSymbol}
               </div>
             </div>
           </div>

@@ -13,6 +13,7 @@ import { useERC20 } from "../../../hooks/contracts/useERC20";
 import {
   BranchInfo,
   useSocotraBranchManager,
+<<<<<<< HEAD
 } from "../../../hooks/contracts/useSocotraBranchManager";
 import { TokenType } from "../../../hooks/useCovalent";
 import { MembershipsCard } from "../MembershipsCard";
@@ -22,6 +23,18 @@ import { Proposal } from "../Proposal";
 import { ProposalBuild } from "../ProposalBuild";
 import { ProposalMember } from "../ProposalMember";
 import { useSocotraGraph } from "../../../hooks/useSocotraGraph";
+=======
+} from "../../../hooks/contracts/useSocotraBranchManager"
+import { TokenType } from "../../../hooks/useCovalent"
+import { MembershipsCard } from "../MembershipsCard"
+import { Payout } from "../Payout"
+import { PayoutButton } from "../PayoutButton"
+import { Proposal } from "../Proposal"
+import { ProposalBuild } from "../ProposalBuild"
+import { ProposalMember } from "../ProposalMember"
+import { useSocotraGraph } from "../../../hooks/useSocotraGraph"
+import { formatFixed, parseFixed } from "@ethersproject/bignumber"
+>>>>>>> ce9c6157a7435b3de7f2eba4db1804de0013a07d
 
 type SubDAODBType = {
   domain: string | null;
@@ -32,17 +45,18 @@ type SubDAODBType = {
   voteProxyAddress: string | null;
 };
 export const DashboardDetailPage = () => {
-  const { branch, membersByBranch } = useSocotraGraph();
-  const { tokenInfo } = useERC20();
-  const { account } = useWeb3React();
-  const [subDAO, setSubDAO] = useState<any | null>(null);
-  const { getSubDAO } = useSubDAO();
-  const { getProposalDB } = useProposal();
-  const { id: managerAddress } = useParams();
-  const { branchInfo } = useSocotraBranchManager();
-  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>();
-  const [proposal, setProposal] = useState<any>();
-  const [memberProposals, setMemberProposals] = useState<any[]>([]);
+  const [members, setMembers] = useState<any>()
+  const { branch, membersByBranch } = useSocotraGraph()
+  const { tokenInfo } = useERC20()
+  const { account } = useWeb3React()
+  const [subDAO, setSubDAO] = useState<any | null>(null)
+  const { getSubDAO } = useSubDAO()
+  const { getProposalDB } = useProposal()
+  const { id: managerAddress } = useParams()
+  const { branchInfo } = useSocotraBranchManager()
+  const [subDAOInfo, setSubDAOInfo] = useState<SubDAODBType>()
+  const [proposal, setProposal] = useState<any>()
+  const [memberProposals, setMemberProposals] = useState<any[]>([])
   const fetchMemberProposal = async () => {
     const memberProposals = await getProposalDB(managerAddress!);
     setMemberProposals(memberProposals);
@@ -52,8 +66,12 @@ export const DashboardDetailPage = () => {
     fetchMemberProposal();
   }, []);
 
+<<<<<<< HEAD
   const isMember = true;
   const isOwner = true;
+=======
+  const isMember = true
+>>>>>>> ce9c6157a7435b3de7f2eba4db1804de0013a07d
 
   // const inBytes = ethers.utils.formatBytes32String(spaceName)
   // console.log(inBytes)
@@ -88,9 +106,15 @@ export const DashboardDetailPage = () => {
   };
 
   const fetchMember = async () => {
+<<<<<<< HEAD
     const data = await membersByBranch(managerAddress!);
     console.log("data", data);
   };
+=======
+    const data = await membersByBranch(managerAddress!)
+    setMembers(data)
+  }
+>>>>>>> ce9c6157a7435b3de7f2eba4db1804de0013a07d
 
   return (
     <Layout>
@@ -127,16 +151,22 @@ export const DashboardDetailPage = () => {
           <MemberCard size="small" wallet={{ address: subDAO?.owner }} />
         </div>
         <div className=" bg-white p-[24px]">
-          {isMember && <Payout subDAO={subDAO} />}
+          {members
+            ?.map((i: any) => i?.member?.id?.toLocaleLowerCase())
+            .includes(account?.toLocaleLowerCase()) && (
+            <Payout subDAO={subDAO} members={members} />
+          )}
           {subDAOInfo?.domain ? (
-            isOwner ? (
+            account?.toLocaleLowerCase() ===
+            subDAO?.owner?.toLocaleLowerCase() ? (
               <Proposal spaceName={subDAOInfo?.domain} subDAOInfo={subDAO} />
             ) : (
               memberProposals.map((proposal, index) => (
                 <ProposalMember proposalDB={proposal} />
               ))
             )
-          ) : isOwner ? (
+          ) : account?.toLocaleLowerCase() ===
+            subDAO?.owner?.toLocaleLowerCase() ? (
             <ProposalBuild subDAOInfo={subDAO} fetcher={fetchInfo} />
           ) : (
             <></>
@@ -154,23 +184,23 @@ export const DashboardDetailPage = () => {
                   Memberships
                 </div>
                 <div className="text-secondary text-[16px] font-medium">
-                  8 members
+                  {members?.length} members
                 </div>
               </div>
-              <div>
-                {/* <SecondaryButton outlined dark>
-                  Manage member
-                </SecondaryButton> */}
-              </div>
+              <div></div>
             </div>
             <div className="grid gap-[8px]">
-              {Array.from({ length: 9 }).map((_, idx: number) => (
+              {members?.map((m: any, idx: number) => (
                 <MembershipsCard
                   key={`member-${idx}`}
-                  address={""}
-                  subDAOAmount={"1"}
-                  mainDAOAmount={"1"}
-                  action={isOwner && <PayoutButton subDAO={subDAO} />}
+                  address={m?.member?.id}
+                  subDAOAmount={formatFixed(parseFixed(m.totalTokens), 18)}
+                  mainDAOAmount={formatFixed(parseFixed(m.rewardAmount), 18)}
+                  action={
+                    account?.toLocaleLowerCase() ===
+                      subDAO?.owner?.toLocaleLowerCase() &&
+                    m.claimingTokens !== "0" && <PayoutButton subDAO={subDAO} />
+                  }
                   labels={["Vote token", "Rewards token"]}
                 />
               ))}

@@ -2,6 +2,12 @@ import { formatFixed, parseFixed } from "@ethersproject/bignumber";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import ERC20ABI from "../../abis/ERC20abi.json";
+import {
+  Multicall,
+  ContractCallResults,
+  ContractCallContext,
+} from "ethereum-multicall";
+
 import { TokenType } from "../useCovalent";
 
 export const useERC20 = () => {
@@ -10,9 +16,6 @@ export const useERC20 = () => {
   const getContract = (address: string) => {
     if (!active || !chainId) return;
 
-    // const provider = new ethers.providers.JsonRpcProvider(
-    //   process.env.REACT_APP_INFURA
-    // )
     const provider = new ethers.providers.Web3Provider(library.provider);
     const signer = provider.getSigner();
 
@@ -75,49 +78,81 @@ export const useERC20 = () => {
   const tokenInfo = async (
     erc20Address: string,
     managerAddr?: string
-  ): Promise<TokenType> => {
-    const ethcallProvider = new Provider(provider);
-    await ethcallProvider.init();
+  ): Promise<any> => {
+    try {
+      const provider = new ethers.providers.Web3Provider(library.provider);
+      // you can use any ethers provider context here this example is
+      // just shows passing in a default provider, ethers hold providers in
+      // other context like wallet, signer etc all can be passed in as well.
+      const multicall = new Multicall({
+        ethersProvider: provider,
+        tryAggregate: true,
+      });
+      console.log(erc20Address);
+      const contractCallContext: ContractCallContext[] = [
+        {
+          reference: "token",
+          contractAddress: erc20Address,
+          abi: ERC20ABI,
+          calls: [
+            { reference: "symbol", methodName: "symbol", methodParameters: [] },
+            {
+              reference: "balanceAccount",
+              methodName: "balanceOf",
+              methodParameters: [account],
+            },
+            { reference: "name", methodName: "name", methodParameters: [] },
+            {
+              reference: "decimals",
+              methodName: "decimals",
+              methodParameters: [],
+            },
+            {
+              reference: "totalSupply",
+              methodName: "totalSupply",
+              methodParameters: [],
+            },
+            {
+              reference: "balanceManager",
+              methodName: "balanceOf",
+              methodParameters: [managerAddr],
+            },
+          ],
+        },
+      ];
 
-    // const contractCalls = accounts.map(account => compoundContract.getAccountLiquidity(account.id))
-    const tokenContract = await getContract(erc20Address);
-    const contractCalls = [];
-    if (tokenContract) {
-      contractCalls.push([
-        tokenContract.symbol(),
-        tokenContract.balanceOf(account),
-        tokenContract.name(),
-        tokenContract.decimal(),
-        tokenContract.totalSupply(),
-      ]);
-      const results = await ethcallProvider.all(contractCalls);
+      const results: ContractCallResults = await multicall.call(
+        contractCallContext
+      );
+
+      const _symbol =
+        results.results.token.callsReturnContext[0].returnValues[0];
+
+      const _balance =
+        results.results.token.callsReturnContext[1].returnValues[0];
+
+      const _name = results.results.token.callsReturnContext[2].returnValues[0];
+      const _decimals =
+        results.results.token.callsReturnContext[3].returnValues[0];
+      const _totalSupply =
+        results.results.token.callsReturnContext[4].returnValues[0];
+      const _balanceManagerAddr =
+        results.results.token.callsReturnContext[5].returnValues[0];
+
+      console.log();
+      return {
+        symbol: _symbol,
+        balance: formatFixed(_balance, _decimals),
+        name: _name,
+        decimals: _decimals,
+        address: erc20Address,
+        logo: "",
+        totalSupply: Number(formatFixed(_totalSupply, _decimals)).toFixed(),
+        branchBalance: formatFixed(_balanceManagerAddr, _decimals),
+      };
+    } catch (err) {
+      console.log(err);
     }
-
-    let _balanceManagerAddr = null;
-    if (managerAddr) {
-      _balanceManagerAddr = await balanceOf(_balance, managerAddr!);
-    }
-
-    console.log({
-      symbol: _symbol,
-      balance: formatFixed(_balance, _decimals),
-      name: _name,
-      decimals: _decimals,
-      address: erc20Address,
-      logo: "",
-      totalSupply: Number(formatFixed(_totalSupply, _decimals)).toFixed(),
-      branchBalance: formatFixed(_balanceManagerAddr, _decimals),
-    });
-    return {
-      symbol: _symbol,
-      balance: formatFixed(_balance, _decimals),
-      name: _name,
-      decimals: _decimals,
-      address: erc20Address,
-      logo: "",
-      totalSupply: Number(formatFixed(_totalSupply, _decimals)).toFixed(),
-      branchBalance: formatFixed(_balanceManagerAddr, _decimals),
-    };
   };
   return {
     getContract,

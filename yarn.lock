@@ -1440,7 +1440,7 @@
     bech32 "1.1.4"
     ws "7.4.6"
 
-"@ethersproject/providers@5.6.7":
+"@ethersproject/providers@5.6.7", "@ethersproject/providers@^5.0.10":
   version "5.6.7"
   resolved "https://registry.yarnpkg.com/@ethersproject/providers/-/providers-5.6.7.tgz#1f88ec94febb79a90e33f7e0100354878fb4dabe"
   integrity sha512-QG7KLxfYk0FA0ycWATKMM8UzMOfOvchtkN89nNORlPqqhX5zatdamJ506dh5ECk+ybcnCkeVOdStlzrOMkkGOA==
@@ -6122,6 +6122,14 @@ etag@~1.8.1:
   resolved "https://registry.npmjs.org/etag/-/etag-1.8.1.tgz"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
+ethereum-multicall@^2.12.0:
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/ethereum-multicall/-/ethereum-multicall-2.12.0.tgz#ef7ea84ae44c5f43ef0bd4f5e493f7283adf9339"
+  integrity sha512-LarV0DzEMBbzTwIe+vpwUsba27WPuBRTQ45GudzczDSBXqGzDgbBEeUHF+I7TEaxJ4I2zZg5kllsRz5BAjVUYA==
+  dependencies:
+    "@ethersproject/providers" "^5.0.10"
+    ethers "^5.0.15"
+
 ethers-multicall@^0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/ethers-multicall/-/ethers-multicall-0.2.3.tgz#872b5ad7d6b5d4d7f2960c33bf36bd46d034ac41"
@@ -6129,7 +6137,7 @@ ethers-multicall@^0.2.3:
   dependencies:
     ethers "^5.0.0"
 
-ethers@^5.0.0:
+ethers@^5.0.0, ethers@^5.0.15:
   version "5.6.7"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.7.tgz#3e6257b2a0fdd5fc93e68e141cf2b9761900f374"
   integrity sha512-Q8pmMraUENK0cY6cy6IvIe3e9xL/+4kBvxmUvLXg1O7Abob0c7XzWI76E29j5em/HxWMl5hYiSClmOMW3jJmdg==
